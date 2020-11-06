@@ -1,3 +1,2 @@
 # CMSC447-Collabracadabra
-I am testing a commit
-me too
+### This code implements a First Responder mission management system 
