@@ -4,43 +4,19 @@ function hidePassword() {//function hides password if checkbox toggled
     if (x.type === "password") {
         x.type = "text";
     }
-    
+
     else {
         x.type = "password";
     }
 }
 
-/* w3 tutorial for findOne
-//Placeholder for MongoDB
+
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/";
-
-MongoClient.connect(url, function (err, db) {
+var url = "mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/AFRMS?retryWrites=true&w=majority";
+MongooClient.connect(url, function (err, db) {
     if (err) throw err;
-    var dbo = db.db("mydb");
-    dbo.collection("userNames").findOne({}, function (err, result) {
-        if (err) throw err;
-        console.log(result.name);
-        db.close();
-    });
+    console.log("Successfully connected to MongoDB");
 });
-*/
-
-
-var mongoose = require(mongoose),
-    User = require(./user-model);
-
-var connStr = mongodb://localhost:27017/mongoose-bcrypt-test;
-    mongoose.connect(connStr, function (err) {
-        if (err) throw err;
-        console.log(Successfully connected to MongoDB);
-    });
-
-// create a user
-//var testUser = new User({
-//    username: jmar777,
-//    password: Password;
-//});
 
 
 //assumes username textfield has ID of 'user' and
@@ -52,17 +28,16 @@ function signInButton() {
     var passInput = document.getElementById("pass").value;
 
     // fetch user and test password verification
-    User.findOne({ username: userInput }, function (err, user) {
-        if (err) throw err;
-
-        // test a matching password
-        user.comparePassword(passInput, function (err, isMatch) {
-            if (err) throw err;
+    var dbo = db.db("databaseFunctions");
+    dbo.collection("Users").findOne({ name: userInput }, function (err, user) {
+        //    User.findOne({ username: userInput }, function (err, user) {
+        //        if (err) throw err;
+        var passwordMatch = passInput.localeCompare(user.password)
+        if (passwordMatch == 0) {
             console.log(passInput, isMatch); // -> Password: true
-            //Go to next page
-        });
+            //GO TO NEXT PAGE
+        }
     });
-
 }
 
 
