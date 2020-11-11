@@ -13,7 +13,7 @@ function hidePassword() {//function hides password if checkbox toggled
 
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/AFRMS?retryWrites=true&w=majority";
-MongooClient.connect(url, function (err, db) {
+MongoClient.connect(url, function (err, db) {
     if (err) throw err;
     console.log("Successfully connected to MongoDB");
 });

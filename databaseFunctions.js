@@ -12,36 +12,37 @@ async function listDatabases(client) {
 // check if each table exists and add it if not
 // don't need to do this.  Mongo automatically creates collections as needed
 
-async function addUser(client, name, pass) {
+async function addUser(client, name, pass, role) {
     var collection = client.db("AFRMS").collection("Users");
     var doc = {
         name: name,
         password: pass,
         role: role
-    }
+    };
     collection.insertOne(doc);
 }
 
 async function addEmployee(client, name, pass, availability, role) {
+    console.log("adding employee");
     
-    
-    const query = { "name": name, "password": pass, "role": role}
+    const query = { "name": name, "password": pass, "role": role};
     var userID = "" 
     userID = client.db("AFRMS").collection("Users").find(query)._id;
-    
-    if (userID = "") {
+    console.log(userID);
+    if (userID == undefined) {
         console.log("User does not exist yet. adding it");
-        addUser(client, name, pass);
+        addUser(client, name, pass, role);
         userID = client.db("AFRMS").collection("Users").find(query)._id; 
+        console.log(userID);
     }
 
     var collection = client.db("AFRMS").collection("Employee");
     var doc = {
         userID: userID,
         availability: availability,
-//      role: role
     };
     collection.insertOne(doc);
+    console.log("added employee");
 
 }
 
@@ -65,11 +66,11 @@ async function main() {
 
     addEmployee(client, "test2", "test2", true, "Dispatch");
 
-    addUser(client, "test", "test");
+    addUser(client, "test", "test", "Cool person");
 
     addEmployee(client, "test1", "test1", true, "Operations Chief");
 
-    client.close()
+    client.close();
 
 }
 
