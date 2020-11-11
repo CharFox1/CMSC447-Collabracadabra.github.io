@@ -28,7 +28,7 @@ function createUserButton() {
         //If it is able to find a user with the same username already in the system then it will arrive here.
         alert("Username already exists; try again.");
         return;
-    }
+    });
     //Create the new user and add it to the database
     var newUser = { name: usernameInput, password: passwordInput, role: roleInput };
     dbo.collection("Users").insertOne(newUser, function (err, res) {
@@ -36,4 +36,4 @@ function createUserButton() {
         console.log("New user inserted");
         db.close();
     });
-});
+}

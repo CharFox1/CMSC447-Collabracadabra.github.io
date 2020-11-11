@@ -16,7 +16,7 @@ async function addUser(client, name, pass) {
     var collection = client.db("AFRMS").collection("Users");
     var doc = {
         name: name,
-        password: pass
+        password: pass,
         role: role
     }
     collection.insertOne(doc);
