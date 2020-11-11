@@ -18,6 +18,12 @@ MongoClient.connect(url, function (err, db) {
     console.log("Successfully connected to MongoDB");
 });
 
+//TESTING CODE:
+var jsdom = require("jsdom");
+var JSDOM = jsdom.JSDOM;
+global.document = new JSDOM("signInPage.html").window.document;
+
+
 var message = document.getElementById("errMsg");
 message.innerHTML = "";
 
