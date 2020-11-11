@@ -36,7 +36,12 @@ function signInButton() {
         if (passwordMatch == 0) {
             console.log(passInput, isMatch); // -> Password: true
             //GO TO NEXT PAGE
+            alert("Successfully logged in");
+            return;
         }
+        //If it is able to find a user with the same username already in the system then it will arrive here.
+        alert("Username or password were incorrect.");
+        return;
     });
 }
 
