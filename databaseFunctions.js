@@ -17,6 +17,7 @@ async function addUser(client, name, pass) {
     var doc = {
         name: name,
         password: pass
+        role: role
     }
     collection.insertOne(doc);
 }
@@ -24,7 +25,7 @@ async function addUser(client, name, pass) {
 async function addEmployee(client, name, pass, availability, role) {
     
     
-    const query = { "name": name, "password": pass}
+    const query = { "name": name, "password": pass, "role": role}
     var userID = "" 
     userID = client.db("AFRMS").collection("Users").find(query)._id;
     
@@ -38,7 +39,7 @@ async function addEmployee(client, name, pass, availability, role) {
     var doc = {
         userID: userID,
         availability: availability,
-        role: role
+//      role: role
     };
     collection.insertOne(doc);
 
