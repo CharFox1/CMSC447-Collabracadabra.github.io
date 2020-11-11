@@ -18,7 +18,7 @@ MongoClient.connect(url, function (err, db) {
     console.log("Successfully connected to MongoDB");
 });
 
-message = document.getElementById("errMsg");
+var message = document.getElementById("errMsg");
 message.innerHTML = "";
 
 //assumes username textfield has ID of 'user' and
