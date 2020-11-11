@@ -13,6 +13,8 @@ MongooClient.connect(url, function (err, db) {
     console.log("Successfully connected to MongoDB");
 });
 
+message = document.getElementById("errMsg");
+message.innerHTML = "";
 
 // After selecting the create user button it will then need to search through the database to see if that user is already taken and if so tell them to change the
 // username value. Passwords can probably be the same.
@@ -26,14 +28,14 @@ function createUserButton() {
     var dbo = db.db("databaseFunctions");
     dbo.collection("Users").findOne({ name: userInput }, function (err, user) {
         //If it is able to find a user with the same username already in the system then it will arrive here.
-        alert("Username already exists; try again.");
+        message.innerHTML = "Username already exists; try again.";
         return;
     });
     //Create the new user and add it to the database
     var newUser = { name: usernameInput, password: passwordInput, role: roleInput };
     dbo.collection("Users").insertOne(newUser, function (err, res) {
         if (err) throw err;
-        console.log("New user inserted");
+        message.innerHTML = "New user inserted";
         db.close();
     });
 }

@@ -18,6 +18,8 @@ MongoClient.connect(url, function (err, db) {
     console.log("Successfully connected to MongoDB");
 });
 
+message = document.getElementById("errMsg");
+message.innerHTML = "";
 
 //assumes username textfield has ID of 'user' and
 //password texfield has ID of 'pass'
@@ -36,11 +38,11 @@ function signInButton() {
         if (passwordMatch == 0) {
             console.log(passInput, isMatch); // -> Password: true
             //GO TO NEXT PAGE
-            alert("Successfully logged in");
+            message.innerHTML = "Successfully Logged In";
             return;
         }
         //If it is able to find a user with the same username already in the system then it will arrive here.
-        alert("Username or password were incorrect.");
+        message.innerHTML = "Username or password are incorrect";
         return;
     });
 }
