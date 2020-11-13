@@ -46,7 +46,7 @@ exports.addEmployee = async function addEmployee(client, name, pass, role, avail
             password: pass,
             role: role
         };
-    collection.insertOne(doc);
+    await collection.insertOne(doc);
     }
 
     const user = await client.db("AFRMS").collection("Users").findOne(query);
@@ -62,7 +62,7 @@ exports.addEmployee = async function addEmployee(client, name, pass, role, avail
         role: role,
         availability: availability,
     };
-    collection.insertOne(doc);
+    await collection.insertOne(doc);
     console.log("added employee");
 }
 
@@ -81,6 +81,7 @@ async function main() {
 
         // await function calls
         await db.addEmployee(client, "test2", "test2", "Operations Chief", true);
+        await db.addEmployee(client, "test3", "test2", "Operations Chief", true);
 
     } catch (e) {
         console.error(e);
