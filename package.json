@@ -1,0 +1,19 @@
+{
+  "name": "afrms",
+  "version": "1.0.0",
+  "description": "A first responder web app",
+  "main": "signInPage.js",
+  "scripts": {
+    "test": "\"echo \\\"Error: no test specified\\\" && exit 1\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CharFox1/CMSC447-Collabracadabra.github.io.git"
+  },
+  "author": "Collabracadabra",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CharFox1/CMSC447-Collabracadabra.github.io/issues"
+  },
+  "homepage": "https://github.com/CharFox1/CMSC447-Collabracadabra.github.io#readme"
+}
