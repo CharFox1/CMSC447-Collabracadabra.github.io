@@ -2,17 +2,17 @@
 
 const tables = ["Users", "Employee", "PersonInNeed", "Teams", "Events", "Missions"]
 
-export async function listDatabases(client) {
+exports.listDatabases = async function listDatabases(client) {
     databasesList = await client.db().admin().listDatabases();
 
     console.log("Databases:");
     databasesList.databases.forEach(db => console.log(` - ${db.name}`));
-};
+}
 
 // check if each table exists and add it if not
 // don't need to do this.  Mongo automatically creates collections as needed
 
-export async function addUser(client, name, pass, role) {
+exports.addUser =  async function addUser(client, name, pass, role) {
 
     var collection = client.db("AFRMS").collection("Users");
     var doc = {
@@ -24,7 +24,7 @@ export async function addUser(client, name, pass, role) {
     
 }
 
-export async function addEmployee(client, name, pass, role, availability) {
+exports.addEmployee = async function addEmployee(client, name, pass, role, availability) {
 
     console.log("Checking if employee already exists");
     const query = {name: name, password: pass, role: role};
@@ -68,6 +68,8 @@ export async function addEmployee(client, name, pass, role, availability) {
 
 async function main() {
 
+    var db = require("./databaseFunctions.js")
+
     // setup connection to the cluster
     const MongoClient = require('mongodb').MongoClient;
     const uri = "mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/AFRMS?retryWrites=true&w=majority";
@@ -78,7 +80,7 @@ async function main() {
         await client.connect();
 
         // await function calls
-        await addEmployee(client, "test2", "test2", "Operations Chief", true);
+        await db.addEmployee(client, "test2", "test2", "Operations Chief", true);
 
     } catch (e) {
         console.error(e);
