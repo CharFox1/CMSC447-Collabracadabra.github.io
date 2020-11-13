@@ -13,64 +13,81 @@ async function listDatabases(client) {
 // don't need to do this.  Mongo automatically creates collections as needed
 
 async function addUser(client, name, pass, role) {
-    var collection = client.db("AFRMS").collection("Users");
-    var doc = {
-        name: name,
-        password: pass,
-        role: role
-    };
-    collection.insertOne(doc);
-}
-
-async function addEmployee(client, name, pass, availability, role) {
-    console.log("adding employee");
     
-    const query = { "name": name, "password": pass, "role": role};
-    var userID = "" 
-    userID = client.db("AFRMS").collection("Users").find(query)._id;
-    console.log(userID);
-    if (userID == undefined) {
-        console.log("User does not exist yet. adding it");
-        addUser(client, name, pass, role);
-        userID = client.db("AFRMS").collection("Users").find(query)._id; 
-        console.log(userID);
+    try {
+        // connect to the cluster
+        await client.connect();
+
+        var collection = client.db("AFRMS").collection("Users");
+        var doc = {
+            name: name,
+            password: pass,
+            role: role
+        };
+        collection.insertOne(doc);
+
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
     }
-
-    var collection = client.db("AFRMS").collection("Employee");
-    var doc = {
-        userID: userID,
-        availability: availability,
-    };
-    collection.insertOne(doc);
-    console.log("added employee");
-
+    
 }
 
-async function main() {
-
-    // attempt to connect to the database
-    const MongoClient = require('mongodb').MongoClient;
-    const uri = "mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/AFRMS?retryWrites=true&w=majority";
-    const client = new MongoClient(uri, { useNewUrlParser: true }, { useUnifiedTopology: true }, { keepAlive: 1 });
+async function addEmployee(client, name, pass, role, availability) {
+        
+    console.log("adding employee");
 
     try {
         // connect to the cluster
         await client.connect();
 
-        // print databases in cluster
-        await listDatabases(client);
+        console.log("Checking if employee user already exists");
+        
+        const query = {name: name, password: pass, role: role};
+        var exists = await client.db("AFRMS").collection("Users").findOne(query)
+        console.log(exists)
+        if (exists == null) {
+            console.log("User does not exist yet. adding it");
+            var collection = client.db("AFRMS").collection("Users");
+            var doc = {
+                name: name,
+                password: pass,
+                role: role
+            };
+        collection.insertOne(doc);
+        }
+
+        const user = await client.db("AFRMS").collection("Users").findOne(query);
+        console.log(user);
+        var userID = user._id;
+        console.log(userID);
+
+        var collection = client.db("AFRMS").collection("Employee");
+        var doc = {
+            userID: userID,
+            availability: availability,
+        };
+        collection.insertOne(doc);
+        console.log("added employee");
 
     } catch (e) {
         console.error(e);
+    } finally {
+        await client.close();
     }
 
-    addEmployee(client, "test2", "test2", true, "Dispatch");
+}
 
-    addUser(client, "test", "test", "Cool person");
+async function main() {
 
-    addEmployee(client, "test1", "test1", true, "Operations Chief");
+    // setup connection to the cluster
+    const MongoClient = require('mongodb').MongoClient;
+    const uri = "mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/AFRMS?retryWrites=true&w=majority";
+    const client = new MongoClient(uri, { useNewUrlParser: true }, { useUnifiedTopology: true });
 
-    client.close();
+    //addUser(client, "test", "test", "Cool person");
+    addEmployee(client, "test2", "test2", "Operations Chief", true);
 
 }
 
