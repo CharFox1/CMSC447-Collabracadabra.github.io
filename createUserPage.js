@@ -6,15 +6,40 @@
 
 
 //Establishes connection to the mongo database
-var MongoClient = require('mongodb').MongoClient;
+/*var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/AFRMS?retryWrites=true&w=majority";
-MongooClient.connect(url, function (err, db) {
+MongoClient.connect(url, function (err, db) {
     if (err) throw err;
     console.log("Successfully connected to MongoDB");
 });
+*/
+async function main() {
+ /*   
+    // setup connection to the cluster
+    const MongoClient = require('mongodb').MongoClient;
+    const uri = "mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/AFRMS?retryWrites=true&w=majority";
+    const client = new MongoClient(uri, { useNewUrlParser: true }, { useUnifiedTopology: true });
 
-message = document.getElementById("errMsg");
-message.innerHTML = "";
+    try {
+        // connect to the cluster
+        await client.connect();
+
+        var dataFunc = require("./databaseFunctions");
+        await dataFunc.addEmployee(client, "userTest3", "passTest", "roleTest", true);
+
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+
+   */ 
+}
+
+main().catch(console.error);
+
+//message = document.getElementById("errMsg");
+//message.innerHTML = "";
 
 // After selecting the create user button it will then need to search through the database to see if that user is already taken and if so tell them to change the
 // username value. Passwords can probably be the same.
@@ -24,6 +49,25 @@ function createUserButton() {
     var passwordInput = document.getElementById("password").value;
     var roleInput = document.getElementById("role").value;
 
+    // setup connection to the cluster
+    const MongoClient = require('mongodb').MongoClient;
+    const uri = "mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/AFRMS?retryWrites=true&w=majority";
+    const client = new MongoClient(uri, { useNewUrlParser: true }, { useUnifiedTopology: true });
+
+    try {
+        // connect to the cluster
+        await client.connect();
+
+        var dataFunc = require("./databaseFunctions");
+        await dataFunc.addEmployee(client, usernameInput, passwordInput, roleInput, true);
+
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+
+/*
     //Search through the database to see if the username is already taken.
     var dbo = db.db("databaseFunctions");
     dbo.collection("Users").findOne({ name: userInput }, function (err, user) {
@@ -38,4 +82,5 @@ function createUserButton() {
         message.innerHTML = "New user inserted";
         db.close();
     });
+*/
 }

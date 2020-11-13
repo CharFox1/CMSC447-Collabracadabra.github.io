@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/CharFox1/CMSC447-Collabracadabra.github.io/issues"
   },
-  "homepage": "https://github.com/CharFox1/CMSC447-Collabracadabra.github.io#readme"
+  "homepage": "https://github.com/CharFox1/CMSC447-Collabracadabra.github.io#readme",
+  "dependencies": {
+    "mongodb": "^3.6.3"
+  }
 }

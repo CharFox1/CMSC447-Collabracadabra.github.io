@@ -1,5 +1,7 @@
 // This file has all the functions for creating and interacting with the tables in mongodb
 
+const { time } = require("console");
+
 const tables = ["Users", "Employee", "PersonInNeed", "Teams", "Events", "Missions"]
 
 exports.listDatabases = async function listDatabases(client) {
@@ -21,6 +23,24 @@ exports.addUser =  async function addUser(client, name, pass, role) {
         role: role
     };
     collection.insertOne(doc);
+    
+}
+
+exports.findUser = async function findUser(client, name, pass) {
+
+    console.log("Checking if employee exists");
+    const query = { name: name, password: pass };
+    var exists = await client.db("AFRMS").collection("Employee").findOne(query)
+    console.log(exists);
+    if (exists == null) {
+        console.log("The employee was not found");
+        return;
+    }
+    else {
+        //GO TO NEXT PAGE
+        return exists._id;
+    }
+    
     
 }
 
@@ -66,29 +86,21 @@ exports.addEmployee = async function addEmployee(client, name, pass, role, avail
     console.log("added employee");
 }
 
-async function main() {
-
-    var db = require("./databaseFunctions.js")
-
-    // setup connection to the cluster
-    const MongoClient = require('mongodb').MongoClient;
-    const uri = "mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/AFRMS?retryWrites=true&w=majority";
-    const client = new MongoClient(uri, { useNewUrlParser: true }, { useUnifiedTopology: true });
-
-    try {
-        // connect to the cluster
-        await client.connect();
-
-        // await function calls
-        await db.addEmployee(client, "test2", "test2", "Operations Chief", true);
-        await db.addEmployee(client, "test3", "test2", "Operations Chief", true);
-
-    } catch (e) {
-        console.error(e);
-    } finally {
-        await client.close();
+exports.addEvent = async function addEvent(client, PIN, Employee, timestamp = 0, location = null, 
+                                            desc = "", severity = 0, mission = null) {
+    
+    var doc = {
+        PIN: PIN,
+        Employee: Employee,
+        timestamp: timestamp,
+        location: location,
+        desc: desc,
+        severity: severity,
+        mission: mission
     }
 
-}
+    var collection = client.db("AFRMS").collection("Events");
+    await collection.insertOne(doc);
+    console.log("added event")
 
-main().catch(console.error);
+}

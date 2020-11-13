@@ -11,30 +11,44 @@ function hidePassword() {//function hides password if checkbox toggled
 }
 
 
-var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/AFRMS?retryWrites=true&w=majority";
-MongoClient.connect(url, function (err, db) {
-    if (err) throw err;
-    console.log("Successfully connected to MongoDB");
-});
-
-//TESTING CODE:
-var jsdom = require("jsdom");
-var JSDOM = jsdom.JSDOM;
-global.document = new JSDOM("signInPage.html").window.document;
-
-
 var message = document.getElementById("errMsg");
-message.innerHTML = "";
+message.innerHTML = "HELLO";
 
 //assumes username textfield has ID of 'user' and
 //password texfield has ID of 'pass'
 //if successful signin occurs, current user is passed
 //to local storage key "currentUser"
-function signInButton() {
+async function signInButton() {
     var userInput = document.getElementById("user").value;
     var passInput = document.getElementById("pass").value;
 
+    // setup connection to the cluster
+    const MongoClient = require('mongodb').MongoClient;
+    const uri = "mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/AFRMS?retryWrites=true&w=majority";
+    const client = new MongoClient(uri, { useNewUrlParser: true }, { useUnifiedTopology: true });
+
+    try {
+        // connect to the cluster
+        await client.connect();
+
+        var dataFunc = require("./databaseFunctions");
+        var employeeID = await dataFunc.findUser(client, usernameInput, passwordInput);
+
+        if (employeeID != null) {
+            //GO TO NEXT PAGE
+        }
+        else {
+            message.innerHTML = "The employee was not found";
+        }
+
+        
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+    
+    /*
     // fetch user and test password verification
     var dbo = db.db("databaseFunctions");
     dbo.collection("Users").findOne({ name: userInput }, function (err, user) {
@@ -51,6 +65,7 @@ function signInButton() {
         message.innerHTML = "Username or password are incorrect";
         return;
     });
+    */
 }
 
 
