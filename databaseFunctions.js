@@ -98,6 +98,50 @@ exports.addEmployee = async function addEmployee(client, name, pass, role, avail
     console.log("added employee");
 }
 
+// takes client and a document with PIN data in it
+// doc must have name, pass
+// doc can have phone, age, gender, ip/mac
+exports.addPIN = async function addPIN(client, doc) {
+
+    var name = doc.name;
+    var password = doc.password;
+    var role = "PIN";
+    if (name == null | password == null) {
+        console.log("Name or password not provided! Cannot add PIN");
+        return;
+    }
+
+    console.log("Checking if PIN already exists");
+    var query = {name: name, password: password};
+    var exists = await client.db("AFRMS").collection("Person in Need").findOne(query);
+    if (exists != null) {
+        console.log("This PIN already exists!");
+        return;
+    }
+
+    console.log("Checking if User already exists");
+    exists = await client.db("AFRMS").collection("Users").findOne(query);
+    if (exists == null) {
+        console.log("User does not exist yet. adding it");
+        var collection = client.db("AFRMS").collection("Users");
+        var userDoc = {
+            name: name,
+            password: password,
+            role: role
+        };
+    } 
+
+    var userID = await client.db("AFRMS").collection("Users").findOne(query)._id;
+    doc.userID = userID;
+
+    await collection.insertOne(userDoc);
+
+    console.log("adding PIN to database");
+    var collection = client.db("AFRMS").collection("Person in Need");
+    await collection.insertOne(doc);
+}
+
+
 exports.addEvent = async function addEvent(client, PIN, Employee, timestamp = 0, location = null, 
                                             desc = "", severity = 0, mission = null) {
     
