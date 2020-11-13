@@ -28,7 +28,7 @@ exports.addEmployee = async function addEmployee(client, name, pass, role, avail
 
     console.log("Checking if employee already exists");
     const query = {name: name, password: pass, role: role};
-    var exists = await client.db("AFRMS").collection("Users").findOne(query)
+    var exists = await client.db("AFRMS").collection("Employee").findOne(query)
     console.log(exists);
     if (exists != null) {
         console.log("This employee already exists!");
