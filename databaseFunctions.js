@@ -22,8 +22,33 @@ exports.addUser =  async function addUser(client, name, pass, role) {
         password: pass,
         role: role
     };
-    collection.insertOne(doc);
+    await collection.insertOne(doc);
     
+}
+
+exports.getUser = async function getUser(client, name, pass, role) {
+    console.log("Finding user")
+    var collection = client.db("AFRMS").collection("Users");
+    var doc = {
+        name: name,
+        password: pass,
+        role: role
+    };
+    return (await collection.findOne(doc)); 
+}
+
+exports.updateUser = async function updateUser(client, id, name, pass, role) {
+
+    var collection = client.db("AFRMS").collection("Users");
+    var doc = {
+        name: name,
+        password: pass,
+        role: role
+    };
+    result = await collection.updateOne( {_id: id}, 
+            {$set: {_id: id, name: name, pass:pass, role:role}});
+    console.log(`${result.matchedCount} document(s) matched the query criteria.`);
+    console.log(`${result.modifiedCount} document(s) was/were updated.`);
 }
 
 exports.findUser = async function findUser(client, name, pass) {

@@ -10,9 +10,12 @@ function hidePassword() {//function hides password if checkbox toggled
     }
 }
 
+async function main() {
+    var message = document.getElementById("errMsg");
+    message.innerHTML = "HELLO";
+}
 
-var message = document.getElementById("errMsg");
-message.innerHTML = "HELLO";
+main().catch(console.error);
 
 //assumes username textfield has ID of 'user' and
 //password texfield has ID of 'pass'
