@@ -2,7 +2,7 @@
 
 const tables = ["Users", "Employee", "PersonInNeed", "Teams", "Events", "Missions"]
 
-async function listDatabases(client) {
+export async function listDatabases(client) {
     databasesList = await client.db().admin().listDatabases();
 
     console.log("Databases:");
@@ -12,7 +12,7 @@ async function listDatabases(client) {
 // check if each table exists and add it if not
 // don't need to do this.  Mongo automatically creates collections as needed
 
-async function addUser(client, name, pass, role) {
+export async function addUser(client, name, pass, role) {
 
     var collection = client.db("AFRMS").collection("Users");
     var doc = {
@@ -24,7 +24,7 @@ async function addUser(client, name, pass, role) {
     
 }
 
-async function addEmployee(client, name, pass, role, availability) {
+export async function addEmployee(client, name, pass, role, availability) {
 
     console.log("Checking if employee already exists");
     const query = {name: name, password: pass, role: role};
