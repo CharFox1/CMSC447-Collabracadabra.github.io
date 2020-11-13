@@ -17,12 +17,12 @@ async function main() {
         await db.addEmployee(client, "test2", "test2", "Operations Chief", true);
         await db.addEmployee(client, "test3", "test2", "Operations Chief", true);
 
-        var userID = db.getUser(client, "test3", "test2", "Operations Chief")._id;
+        var userID = await db.findUser(client, "test3", "test2");
         console.log(userID);
-        await db.updateUser(client, userID, "test3", "test2", "some role");
+        await db.updateEmployee(client, userID, "test3", "test2", "some role", false);
 
-        var time = new Date();
-        await db.addEvent(client, 123, 456, time, "my house", "its lit", 69);
+        //var time = new Date();
+        //await db.addEvent(client, 123, 456, time, "my house", "its lit", 69);
 
     } catch (e) {
         console.error(e);

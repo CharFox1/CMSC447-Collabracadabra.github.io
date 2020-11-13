@@ -26,27 +26,16 @@ exports.addUser =  async function addUser(client, name, pass, role) {
     
 }
 
-exports.getUser = async function getUser(client, name, pass, role) {
-    console.log("Finding user")
-    var collection = client.db("AFRMS").collection("Users");
-    var doc = {
-        name: name,
-        password: pass,
-        role: role
-    };
-    return (await collection.findOne(doc)); 
-}
+exports.updateEmployee = async function updateEmployee(client, id, name, pass, role, availability) {
 
-exports.updateUser = async function updateUser(client, id, name, pass, role) {
-
-    var collection = client.db("AFRMS").collection("Users");
+    var collection = client.db("AFRMS").collection("Employee");
     var doc = {
         name: name,
         password: pass,
         role: role
     };
     result = await collection.updateOne( {_id: id}, 
-            {$set: {_id: id, name: name, pass:pass, role:role}});
+            {$set: {"_id": id, "name": name, "password":pass, "role":role}});
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
 }
@@ -65,8 +54,6 @@ exports.findUser = async function findUser(client, name, pass) {
         //GO TO NEXT PAGE
         return exists._id;
     }
-    
-    
 }
 
 exports.addEmployee = async function addEmployee(client, name, pass, role, availability) {

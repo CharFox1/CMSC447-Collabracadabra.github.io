@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/CharFox1/CMSC447-Collabracadabra.github.io#readme",
   "dependencies": {
+    "jsdom": "^16.4.0",
     "mongodb": "^3.6.3"
   }
 }

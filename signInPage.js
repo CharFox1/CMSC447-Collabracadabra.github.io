@@ -11,8 +11,12 @@ function hidePassword() {//function hides password if checkbox toggled
 }
 
 async function main() {
-    var message = document.getElementById("errMsg");
-    message.innerHTML = "HELLO";
+    window.addEventListener('user', signInButton, false);
+    
+//    var message = document.getElementById("errMsg");
+//    message.innerHTML = "HELLO";
+
+    
 }
 
 main().catch(console.error);
@@ -41,7 +45,7 @@ async function signInButton() {
             //GO TO NEXT PAGE
         }
         else {
-            message.innerHTML = "The employee was not found";
+//            message.innerHTML = "The employee was not found";
         }
 
         
