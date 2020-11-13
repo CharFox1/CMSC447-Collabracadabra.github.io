@@ -25,7 +25,7 @@ async function main() {
         });
 
         var userID = await db.findUser(client, "test3", "test2");
-        console.log(userID);
+        console.log("[dbTest] UserID to be used in updateEmployee test:", userID);
         await db.updateEmployee(client, userID, "test3", "test2", "some role", false);
 
         //var time = new Date();

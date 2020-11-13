@@ -16,6 +16,14 @@ exports.listDatabases = async function listDatabases(client) {
 
 exports.addUser =  async function addUser(client, name, pass, role) {
 
+    console.log("[addUser] Checking if User already exists");
+    const query = {name: name, password: pass, role: role};
+    var exists = await client.db("AFRMS").collection("Users").findOne(query);
+    if (exists != null) {
+        console.log("[addUser] This User already exists!");
+        return;
+    }
+
     var collection = client.db("AFRMS").collection("Users");
     var doc = {
         name: name,
@@ -23,6 +31,7 @@ exports.addUser =  async function addUser(client, name, pass, role) {
         role: role
     };
     await collection.insertOne(doc);
+    console.log("[addUser] added User!");
     
 }
 
@@ -36,18 +45,18 @@ exports.updateEmployee = async function updateEmployee(client, id, name, pass, r
     };
     result = await collection.updateOne( {_id: id}, 
             {$set: {"_id": id, "name": name, "password":pass, "role":role}});
+    console.log("[updateEmployee]:")
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
 }
 
 exports.findUser = async function findUser(client, name, pass) {
 
-    console.log("Checking if employee exists");
+    console.log("[findUser] Checking if employee exists");
     const query = { name: name, password: pass };
-    var exists = await client.db("AFRMS").collection("Employee").findOne(query)
-    console.log(exists);
+    var exists = await client.db("AFRMS").collection("Employee").findOne(query);
     if (exists == null) {
-        console.log("The employee was not found");
+        console.log("[findUser] The employee was not found");
         return;
     }
     else {
@@ -58,20 +67,18 @@ exports.findUser = async function findUser(client, name, pass) {
 
 exports.addEmployee = async function addEmployee(client, name, pass, role, availability) {
 
-    console.log("Checking if employee already exists");
+    console.log("[addEmployee] Checking if Employee already exists");
     const query = {name: name, password: pass, role: role};
-    var exists = await client.db("AFRMS").collection("Employee").findOne(query)
-    console.log(exists);
+    var exists = await client.db("AFRMS").collection("Employee").findOne(query);
     if (exists != null) {
-        console.log("This employee already exists!");
+        console.log("[addEmployee] This employee already exists!");
         return;
     }
     
-    console.log("Checking if employee user already exists");
-    var exists = await client.db("AFRMS").collection("Users").findOne(query)
-    console.log(exists)
+    console.log("[addEmployee] Checking if User already exists");
+    var exists = await client.db("AFRMS").collection("Users").findOne(query);
     if (exists == null) {
-        console.log("User does not exist yet. adding it");
+        console.log("[addEmployee] User does not exist yet. adding it");
         var collection = client.db("AFRMS").collection("Users");
         var doc = {
             name: name,
@@ -95,7 +102,7 @@ exports.addEmployee = async function addEmployee(client, name, pass, role, avail
         availability: availability,
     };
     await collection.insertOne(doc);
-    console.log("added employee");
+    console.log("[addEmployee] Added employee!");
 }
 
 // takes client and a document with PIN data in it
@@ -107,22 +114,22 @@ exports.addPIN = async function addPIN(client, doc) {
     var password = doc.password;
     var role = "PIN";
     if (name == null | password == null) {
-        console.log("Name or password not provided! Cannot add PIN");
+        console.log("[addPIN] Name or password not provided!");
         return;
     }
 
-    console.log("Checking if PIN already exists");
+    console.log("[addPIN] Checking if PIN already exists");
     var query = {name: name, password: password};
     var exists = await client.db("AFRMS").collection("Person in Need").findOne(query);
     if (exists != null) {
-        console.log("This PIN already exists!");
+        console.log("[addPIN] This PIN already exists!");
         return;
     }
 
-    console.log("Checking if User already exists");
+    console.log("[addPIN] Checking if User already exists");
     exists = await client.db("AFRMS").collection("Users").findOne(query);
     if (exists == null) {
-        console.log("User does not exist yet. adding it");
+        console.log("[addPIN] User does not exist yet. adding it");
         var collection = client.db("AFRMS").collection("Users");
         var userDoc = {
             name: name,
@@ -136,27 +143,25 @@ exports.addPIN = async function addPIN(client, doc) {
 
     await collection.insertOne(userDoc);
 
-    console.log("adding PIN to database");
+    console.log("[addPIN] adding PIN to database");
     var collection = client.db("AFRMS").collection("Person in Need");
     await collection.insertOne(doc);
+    console.log("[addPIN] added PIN!");
 }
 
 
-exports.addEvent = async function addEvent(client, PIN, Employee, timestamp = 0, location = null, 
-                                            desc = "", severity = 0, mission = null) {
+exports.addEvent = async function addEvent(client, doc) {
     
-    var doc = {
-        PIN: PIN,
-        Employee: Employee,
-        timestamp: timestamp,
-        location: location,
-        desc: desc,
-        severity: severity,
-        mission: mission
+    var PIN = doc.PIN;
+    var Employee = doc.employee;
+
+    if (PIN == null | Employee == null) {
+        console.log("[addEvent] PIN or Employee ID missing!");
+        return;
     }
 
     var collection = client.db("AFRMS").collection("Events");
     await collection.insertOne(doc);
-    console.log("added event")
+    console.log("[addEvent] added event!")
 
 }
