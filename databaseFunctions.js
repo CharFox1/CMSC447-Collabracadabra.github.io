@@ -14,14 +14,14 @@ exports.listDatabases = async function listDatabases(client) {
 // check if each table exists and add it if not
 // don't need to do this.  Mongo automatically creates collections as needed
 
-exports.addUser = async function addUser(client, name, pass, role) {
+exports.addUser = async function addUser(client, username, pass, name, role) {
 
-    if (name == null | pass == null) {
+    if (username == null | pass == null) {
         console.log("[addUser] name or password cannot be null!");
     }
 
     console.log("[addUser] Checking if User already exists");
-    const query = {name: name};
+    const query = {username: username};
     var exists = await client.db("AFRMS").collection("Users").findOne(query);
     if (exists != null) {
         console.log("[addUser] This User already exists!");
@@ -30,8 +30,9 @@ exports.addUser = async function addUser(client, name, pass, role) {
 
     var collection = client.db("AFRMS").collection("Users");
     var doc = {
-        name: name,
+        username: username,
         password: pass,
+        name: name,
         role: role
     };
     result = await collection.insertOne(doc);
@@ -66,25 +67,26 @@ exports.updateRole = async function updateRole(client, id, role) {
 
 }
 
-exports.updateEmployee = async function updateEmployee(client, id, name, pass, role, availability) {
+exports.updateEmployee = async function updateEmployee(client, id, username, pass, name, role, availability) {
 
     var collection = client.db("AFRMS").collection("Employee");
     var doc = {
-        name: name,
+        username: username,
         password: pass,
+        name: name,
         role: role
     };
     result = await collection.updateOne( {_id: id}, 
-            {$set: {"_id": id, "name": name, "password":pass, "role":role}});
+            {$set: {"_id": id, "username": username, "password":pass, "name": name, "role":role}});
     console.log("[updateEmployee]:")
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
 }
 
-exports.findUser = async function findUser(client, name, pass) {
+exports.findUser = async function findUser(client, username, pass) {
 
     console.log("[findUser] Checking if employee exists");
-    const query = { name: name, password: pass };
+    const query = { username: username, password: pass };
     var exists = await client.db("AFRMS").collection("Users").findOne(query);
     if (exists == null) {
         console.log("[findUser] The employee was not found");
@@ -96,10 +98,10 @@ exports.findUser = async function findUser(client, name, pass) {
     }
 }
 
-exports.addEmployee = async function addEmployee(client, name, pass, role, availability) {
+exports.addEmployee = async function addEmployee(client, username, pass, name, role, availability) {
 
     console.log("[addEmployee] Checking if Employee already exists");
-    const query = {name: name, password: pass, role: role};
+    const query = {username: username, password: pass, role: role};
     var exists = await client.db("AFRMS").collection("Employee").findOne(query);
     if (exists != null) {
         console.log("[addEmployee] This employee already exists!");
@@ -112,8 +114,9 @@ exports.addEmployee = async function addEmployee(client, name, pass, role, avail
         console.log("[addEmployee] User does not exist yet. adding it");
         var collection = client.db("AFRMS").collection("Users");
         var doc = {
-            name: name,
+            username: username,
             password: pass,
+            name: name,
             role: role
         };
     await collection.insertOne(doc);
@@ -127,8 +130,9 @@ exports.addEmployee = async function addEmployee(client, name, pass, role, avail
     var collection = client.db("AFRMS").collection("Employee");
     var doc = {
         userID: userID,
-        name: name,
+        username: username,
         password: pass,
+        name: name,
         role: role,
         availability: availability,
     };
@@ -155,16 +159,17 @@ exports.getAllEmployees = async function getAllEmployees(client) {
 // doc can have phone, age, gender, ip/mac
 exports.addPIN = async function addPIN(client, doc) {
 
-    var name = doc.name;
+    var username = doc.username;
     var password = doc.password;
+    var name = doc.name;
     var role = "PIN";
-    if (name == null | password == null) {
+    if (username == null | password == null) {
         console.log("[addPIN] Name or password not provided!");
         return;
     }
 
     console.log("[addPIN] Checking if PIN already exists");
-    var query = {name: name, password: password};
+    var query = {username: username, password: password};
     var exists = await client.db("AFRMS").collection("Person in Need").findOne(query);
     if (exists != null) {
         console.log("[addPIN] This PIN already exists!");
@@ -177,8 +182,9 @@ exports.addPIN = async function addPIN(client, doc) {
         console.log("[addPIN] User does not exist yet. adding it");
         var collection = client.db("AFRMS").collection("Users");
         var userDoc = {
-            name: name,
+            username: username,
             password: password,
+            name: name,
             role: role
         };
     } 
