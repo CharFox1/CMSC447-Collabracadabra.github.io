@@ -6,10 +6,6 @@ const app = express();
 
 app.set('view engine', 'ejs');
 
-//app.use(express.urlencoded({
-//    extended: true
-//}));
-
 function main() {
     const MongoClient = require('mongodb').MongoClient;
     MongoClient.connect('mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/<dbname>?retryWrites=true&w=majority', (err, client) => {
@@ -24,7 +20,8 @@ function main() {
 
         app.get('/', function (req, res) { res.render('pages/signinPage'); });
         app.get('/createUser', function (req, res) { res.render('pages/createUser'); });
-        app.get('/submitEvent', function (req, res) { res.render('pages/submitEvent'); });
+        
+//        app.get('/submitEvent', function (req, res) { res.render('pages/submitEvent'); });
 //        app.get('/home/pin', function (req, res) { res.render('pages/pinMenu/pinMenu'); });
 
         app.use(bodyParser.urlencoded({ extended: true }));
@@ -121,24 +118,48 @@ function signIn(client) {
     });
 }
 
+function pinMenu(client, user, req, res) {
+
+    //res.render('/home/pin');
+    app.get('/home/pin/newEvent', function (req, res) { res.render('pages/pinMenu/pinNewEvent', submitEventPIN(client, user, req, res)); });
+    app.get('/home/pin', function (req, res) {
+        var username = user.username;
+        var name = user.name;
+        var email = user.email;
+        var number = user.phone;
+
+        res.render('pages/pinMenu/pinMenu', {
+            username: username,
+            name: name,
+            email: email,
+            number: number
+        });
+    });
+    res.redirect('/home/pin');
+}
+
 function submitEventPIN(client, user, req, res) {
 
 //    app.get('/submitEvent', (req, res) => { res.sendFile(__dirname + '/views/submitEvent.html') });
-    res.redirect('/submitEvent');
-    app.post('/SubmitEvent', async (req, res) => {
+    console.log("In submitEventPin");
+    
+    app.post('/newEvent', async (req, res) => {
         var name = req.body.name;
-        var number = req.body.number;
         var email = req.body.email;
+        var number = req.body.number;
         var location = req.body.location;
         var desc = req.body.description;
         var time = new Date();
 
         var dataFunc = require("./databaseFunctions");
 
+        console.log(user._id);
+        console.log(user.username);
         if (name != null & location != null & desc != null) {
             var eventID = await dataFunc.addEvent(client, {
-                PIN: user.userID,
-                PIN_Name: name,
+                PIN: user._id,
+                Username: user.username,
+                Name: name,
                 Number: number,
                 Email: email,
                 timestamp: time,
@@ -146,7 +167,7 @@ function submitEventPIN(client, user, req, res) {
                 Description: desc,
                 severity: null,
                 mission: null,
-                EmployeeIDCheck: null
+                Employee: null
             });
 
             if (eventID != null) {
@@ -167,64 +188,56 @@ function submitEventPIN(client, user, req, res) {
 
 }
 
-function pinMenu(client, user, req, res) {
-
-     //res.render('/home/pin');
-    app.get('/home/pin', function (req, res) {
-        var username = user.username;
-        var name = user.name;
-        var email = user.email;
-        var number = user.phone;
-
-        res.render('pages/pinMenu/pinMenu', {
-            username: username,
-            name: name,
-            email: email,
-            number: number
-        });
-    });
-
-}
 
 function ocMenu(client, user, req, res) {
     //The Operations Chief Needs a way to create missions, view missions and events, view the map, view the teams, assign the teams to missions.
-//    app.get('/ocMenu', (req, res) => { res.sendFile(__dirname + '/views/ocMenu/ocMenu.html') });
-    res.redirect('/ocMenu');
-    //Create a Mission:
-    app.post('/CreateMission', async (req, res) => {
+    //app.get('/home/pin/newEvent', function (req, res) { res.render('pages/pinMenu/pinNewEvent', submitEventPIN(client, user, req, res)); });
+    //app.get('/home/oc/viewEvents', function (req, res) { res.render('pages/ocMenu/viewEvents', { events: events }, viewEvents(client, user, req, res)); });
+    app.get('/home/oc', async function (req, res) {
         //Inside of create a Mission the Operations Chief will need to select a team, and select an array of events to place inside of the mission.
-        createMission(client, user, req, res);
+        //Get an array of all events that have been checked by a dispatcher and have yet to be assigned to a mission.
+        const query = {Employee: {$ne:null}, mission: null };
+        await client.db("AFRMS").collection("Events").find(query).toArray(function (err, pendingEvents) {
 
-        var mission = {
-            team: teamID,
-            author: employees[0],
-            events: [event],
-            status: "Urgent"
-        }
-        var mission = await db.addMission(client, mission);
-    });
-
-    //View the Missions:
-    app.post('/ViewMissions', async (req, res) => {
-        app.get('/', (req, res) => { var cursor = db.collection('quotes').find() });
-        db.collection('quotes').find().toArray(function (err, results) {
-            console.log(results)  // send HTML file populated with quotes here})
+            res.render('pages/ocMenu/ocMenu', {
+                pendingEvents: pendingEvents
+            });
         });
     });
-    //View the events:
-    app.post('/ViewEvents', async (req, res) => {
 
-    });
-    //View the teams:
-    app.post('/ViewTeams', async (req, res) => {
+    app.get('/home/oc/viewEvents', async function (req, res) {
+        await client.db("AFRMS").collection("Events").find().toArray(function (err, events) {
 
+            res.render('pages/ocMenu/viewEvents', {
+                events: events
+            });
+        });
     });
-    //Assign teams to missions:
-    app.post('/AssignTeams', async (req, res) => {
+    app.get('/home/oc/viewMissions', async function (req, res) {
+        await client.db("AFRMS").collection("Missions").find().toArray(function (err, missions) {
+
+            res.render('pages/ocMenu/viewMissions', {
+                missions: missions
+            });
+        });
+    });
+    res.redirect('/home/oc');
+}
+/*
+function viewEvents(client, user, req, res) {
+    //Sends an array to the ejs file so that it outputs all of the events.
+    app.get('/home/oc/viewEvents', async function (req, res) {      
+        await client.db("AFRMS").collection("Events").find().toArray(function (err, events) {
+
+            res.render('pages/ocMenu/viewEvents', {
+                events: events
+            });
+        });
 
     });
 
 }
+*/
 
 function createMission(client, user, req, res) {
 

@@ -207,7 +207,7 @@ exports.addEvent = async function addEvent(client, doc) {
     var PIN = doc.PIN;
     var Employee = doc.Employee;
 
-    if (PIN == null | Employee == null) {
+    if (PIN == null & Employee == null) {
         console.log("[addEvent] PIN or Employee ID missing!");
         return;
     }
