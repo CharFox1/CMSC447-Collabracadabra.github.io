@@ -20,7 +20,13 @@ function main() {
 //        app.get('/createUser', function (req, res) { res.render(__dirname + '/views/pages/createUser.html'); });
 
         app.use(bodyParser.urlencoded({ extended: true }))
-        var employeeID = signIn(client);
+        var dataFunc = require("./databaseFunctions");
+        var userID = signIn(client);
+        if (userID != null) {
+            //GO TO THE MENU PAGE
+
+            if (  )
+        }
 
     });
 }
@@ -42,7 +48,6 @@ function signIn(client) {
         console.log("Searching for user: ");
         console.log(username);
         console.log(pass);
-        var dataFunc = require("./databaseFunctions");
         var userID = await dataFunc.findUser(client, username, pass);
 
         //If employeeID is null that means that either the username or password were incorrect
@@ -73,7 +78,7 @@ function signIn(client) {
         app.get('/createUser', (req, res) => { res.sendFile(__dirname + '/createUser.html') });
         res.redirect('/createUser');
 
-        var dataFunc = require("./databaseFunctions");
+//        var dataFunc = require("./databaseFunctions");
         var userID = await dataFunc.addUser(client, username, pass, "PIN");
 
         if (userID == null) {
