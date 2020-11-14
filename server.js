@@ -15,14 +15,8 @@ function main() {
         var client = client;
         app.listen(3000, () => { console.log('listening on 3000') });
 
-//        app.get('/', function (req, res) { res.render(__dirname + '/views/pages/signInPage.html'); });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
-//        app.get('/createUser', function (req, res) { res.render(__dirname + '/views/pages/createUser.html'); });
-
         app.get('/', function (req, res) { res.render('pages/signinPage'); });
         app.get('/createUser', function (req, res) { res.render('pages/createUser'); });
-        
-//        app.get('/submitEvent', function (req, res) { res.render('pages/submitEvent'); });
-//        app.get('/home/pin', function (req, res) { res.render('pages/pinMenu/pinMenu'); });
 
         app.use(bodyParser.urlencoded({ extended: true }));
         var userID = signIn(client);
