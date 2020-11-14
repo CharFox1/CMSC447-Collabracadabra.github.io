@@ -11,29 +11,31 @@
     </head>
     <body>
         <!--basic username, password, show/hide password setup-->
-        <div class="container text-center">
-            <div class="row bg-info mx-auto p-4 rounded-top">
-                <div class="col-sm-4 text-right">
-                    <label><b>User Name: </b></label>
+        <form action="/Userlogin" method="POST">
+            <div class="container text-center">
+                <div class="row bg-info mx-auto p-4 rounded-top">
+                    <div class="col-sm-4 text-right">
+                        <label><b>User Name: </b></label>
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="text" placeholder="Username" name="username">
+                    </div>
                 </div>
-                <div class="col-sm-8">
-                    <input class="form-control" type="text" id="user">
-                </div>
-            </div>
 
-            <div class="row bg-info mx-auto p-4 rounded-bottom">
-                <div class="col-sm-4 text-right">
-                    <label><b>Password: </b></label>
+                <div class="row bg-info mx-auto p-4 rounded-bottom">
+                    <div class="col-sm-4 text-right">
+                        <label><b>Password: </b></label>
+                    </div>
+                    <div class="col-sm-8">
+                        <!-- Password field -->
+                        <input type="text" placeholder="Password" name="password">
+                        <input type="checkbox" onClick="hidePassword()">Show Password
+                    </div>
                 </div>
-                <div class="col-sm-8">
-                    <!-- Password field -->
-                    <input type="password" class="form-control" id="pass">
-                    <input type="checkbox" onClick="hidePassword()">Show Password
-                </div>
+                <br>
+                <button type="submit">Sign In</button>
+                <p id="errMsg"></p>
             </div>
-            <br>
-            <button class="btn btn-primary" id="leButte" onclick="signInButton()">Sign In</button>
-            <p id="errMsg"></p>
-        </div>
+        </form>
     </body>
 </html>
