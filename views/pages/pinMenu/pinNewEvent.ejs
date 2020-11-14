@@ -14,21 +14,22 @@
 
 
         <header>
-        <%- include('../../Partials/OCheader'); %>
+        <%- include('../../Partials/PINheader'); %>
         </header>
 
 
         <main>
+            <form action="/newEvent" method="POST">          
             <div class="jumbotron">
-            <h1>Pending Events</h1>
-                <% pendingEvents.forEach(function(event) { %>              
-                    <strong>Severity Level: <%= event.severity %></strong>
-                    <p>Location: <%= event.location %> </p>
-                    <p>Description: <%= event.description %> </p>
-                    <p>Person In Need: <%= event.PIN %> </p>
-                    <p>Time: <%= event.timestamp %> </p>
-                    <% }); %>
+            <h1>Insert New Event</h1>
+            <p>Name: <input type="text" name="name"></p>
+            <p>Email: <input type="text" name="email"></p>
+            <p>Phone Number: <input type="text" name="number"></p>
+            <p>Location: <input type="text" name="location"</p>
+            <p>Desciption: <input type="text" name="description"></p>
+            <p><button type="submit" name="submitEvent">Submit Event</button></p>
             </div>
+        </form>
         </main>
 
         <footer>

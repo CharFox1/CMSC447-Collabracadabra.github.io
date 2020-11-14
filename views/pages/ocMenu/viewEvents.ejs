@@ -20,13 +20,15 @@
 
         <main>
             <div class="jumbotron">
-            <h1>Pending Events</h1>
-                <% pendingEvents.forEach(function(event) { %>              
+            <h1>Events</h1>
+                <% events.forEach(function(event) { %>              
                     <strong>Severity Level: <%= event.severity %></strong>
                     <p>Location: <%= event.location %> </p>
                     <p>Description: <%= event.description %> </p>
                     <p>Person In Need: <%= event.PIN %> </p>
                     <p>Time: <%= event.timestamp %> </p>
+                    <p>EmployeeCheck: <%= event.Employee %> </p>
+                    <p>Mission: <%= event.mission %> </p>
                     <% }); %>
             </div>
         </main>
