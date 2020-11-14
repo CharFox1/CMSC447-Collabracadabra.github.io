@@ -4,9 +4,11 @@ const { request } = require('express');
 const { Timestamp } = require('mongodb');
 const app = express();
 
-app.use(express.urlencoded({
-    extended: true
-}));
+//app.set('view engine', 'ejs');
+
+//app.use(express.urlencoded({
+//    extended: true
+//}));
 
 function main() {
     const MongoClient = require('mongodb').MongoClient;
@@ -30,7 +32,7 @@ function main() {
 function signIn(client) {
     console.log("In sign in function");
 //    app.get('/', function (req, res) { res.sendFile(__dirname + '/views/pages/signInPage.html'); });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
-    app.get('/', (req, res) => { res.sendFile(__dirname + '/signinPage.html') });
+    app.get('/', (req, res) => { res.sendFile(__dirname + '/views/signinPage.html') });
     app.post('/Userlogin', async (req, res) => {
         var username = req.body.username;
         var pass = req.body.password;
@@ -85,7 +87,7 @@ function signIn(client) {
         var username = req.body.username;
         var pass = req.body.password;
 
-        app.get('/createUser', (req, res) => { res.sendFile(__dirname + '/createUser.html') });
+        app.get('/createUser', (req, res) => { res.sendFile(__dirname + '/views/createUser.html') });
         res.redirect('/createUser');
 
         var dataFunc = require("./databaseFunctions");
@@ -114,7 +116,7 @@ function signIn(client) {
 
 function submitEventPIN(client, user, req, res) {
 
-    app.get('/submitEvent', (req, res) => { res.sendFile(__dirname + '/submitEvent.html') });
+    app.get('/submitEvent', (req, res) => { res.sendFile(__dirname + '/views/submitEvent.html') });
     res.redirect('/submitEvent');
     app.post('/SubmitEvent', async (req, res) => {
         var name = req.body.name;
@@ -132,9 +134,11 @@ function submitEventPIN(client, user, req, res) {
                 PIN_Name: name,
                 Number: number,
                 Email: email,
+                timestamp: time,
                 Location: location,
                 Description: desc,
-                timestamp: time,
+                severity: null,
+                mission: null,
                 EmployeeIDCheck: null
             });
 
@@ -158,15 +162,27 @@ function submitEventPIN(client, user, req, res) {
 
 function ocMenu(client, user, req, res) {
     //The Operations Chief Needs a way to create missions, view missions and events, view the map, view the teams, assign the teams to missions.
-    app.get('/ocMenu', (req, res) => { res.sendFile(__dirname + '/ocMenu.html') });
+    app.get('/ocMenu', (req, res) => { res.sendFile(__dirname + '/views/ocMenu/ocMenu.html') });
     res.redirect('/ocMenu');
     //Create a Mission:
     app.post('/CreateMission', async (req, res) => {
+        //Inside of create a Mission the Operations Chief will need to select a team, and select an array of events to place inside of the mission.
         createMission(client, user, req, res);
+
+        var mission = {
+            team: teamID,
+            author: employees[0],
+            events: [event],
+            status: "Urgent"
+        }
+        var mission = await db.addMission(client, mission);
     });
 
     //View the Missions:
     app.post('/ViewMissions', async (req, res) => {
+        app.get('/', (req, res) => { var cursor = db.collection('quotes').find() })
+        db.collection('quotes').find().toArray(function (err, results) {
+            console.log(results)  // send HTML file populated with quotes here})
 
     });
     //View the events:
@@ -181,6 +197,11 @@ function ocMenu(client, user, req, res) {
     app.post('/AssignTeams', async (req, res) => {
 
     });
+
+}
+
+function createMission(client, user, req, res) {
+
 
 }
 
