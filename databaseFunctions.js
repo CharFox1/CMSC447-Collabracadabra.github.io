@@ -70,13 +70,13 @@ exports.findUser = async function findUser(client, name, pass) {
 
     console.log("[findUser] Checking if employee exists");
     const query = { name: name, password: pass };
-    var exists = await client.db("AFRMS").collection("Employee").findOne(query);
+    var exists = await client.db("AFRMS").collection("Users").findOne(query);
     if (exists == null) {
         console.log("[findUser] The employee was not found");
         return null;
     }
     else {
-        //GO TO NEXT PAGE
+        console.log("[findUser] The employee was found")
         return exists._id;
     }
 }
