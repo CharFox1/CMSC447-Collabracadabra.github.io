@@ -1,3 +1,9 @@
+console.log('Connected to the server');
+const express = require('express');
+const bodyParser = require('body-parser');
+const { request } = require('express');
+const app = express();
+
 function hidePassword() {//function hides password if checkbox toggled 
     var x = document.getElementById("pass");
 
@@ -9,17 +15,6 @@ function hidePassword() {//function hides password if checkbox toggled
         x.type = "password";
     }
 }
-
-async function main() {
-    window.addEventListener('user', signInButton, false);
-    
-//    var message = document.getElementById("errMsg");
-//    message.innerHTML = "HELLO";
-
-    
-}
-
-main().catch(console.error);
 
 //assumes username textfield has ID of 'user' and
 //password texfield has ID of 'pass'
