@@ -169,7 +169,6 @@ exports.addPIN = async function addPIN(client, doc) {
 exports.addEvent = async function addEvent(client, doc) {
 
     console.log("[addEvent] adding event");
-    console.log(doc);
     
     var PIN = doc.PIN;
     var Employee = doc.Employee;
@@ -194,4 +193,22 @@ exports.updateEvent = async function updateEvent(client, event) {
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
 }
 
-//exports.addMission = async function addMission
+// add team
+// team doc should be of the format {createdBy: employee, members: [employee(s)]}
+exports.addTeam = async function addTeam(client, team) {
+
+    console.log("[addTeam] adding team");
+    result = await client.db("AFRMS").collection("Teams").insertOne(team);
+    return(result.insertedId);
+
+}
+
+// add mission
+// mission doc should be of the format {team: team, author: employee, events: [event(s)], status: int}
+exports.addMission = async function addMission(client, mission) {
+
+    console.log("[addMission] adding Mission");
+    result = await client.db("AFRMS").collection("Missions").insertOne(mission);
+    return(result.insertedId);
+
+}
