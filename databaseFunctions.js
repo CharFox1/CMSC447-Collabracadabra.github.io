@@ -14,10 +14,10 @@ exports.listDatabases = async function listDatabases(client) {
 // check if each table exists and add it if not
 // don't need to do this.  Mongo automatically creates collections as needed
 
-exports.addUser =  async function addUser(client, name, pass, role) {
+exports.addUser = async function addUser(client, name, pass, role) {
 
     console.log("[addUser] Checking if User already exists");
-    const query = {name: name, password: pass, role: role};
+    const query = {name: name};
     var exists = await client.db("AFRMS").collection("Users").findOne(query);
     if (exists != null) {
         console.log("[addUser] This User already exists!");
@@ -30,9 +30,25 @@ exports.addUser =  async function addUser(client, name, pass, role) {
         password: pass,
         role: role
     };
-    await collection.insertOne(doc);
+    result = await collection.insertOne(doc);
     console.log("[addUser] added User!");
+    return (result.insertedId);
     
+}
+
+exports.updateRole = async function updateRole(client, id, role) {
+
+    console.log("[updateRole] Checking if User already exists");
+    const query = {_id: id};
+    var collection = client.db("AFRMS").collection("Users");
+    var exists = await collection.findOne(query);
+    if (exists == null) {
+        console.log("[updateRole] This User does not exist!");
+        return;
+    }
+
+    result = await collection.updateOne(query, {$set: {role: role}});
+
 }
 
 exports.updateEmployee = async function updateEmployee(client, id, name, pass, role, availability) {
@@ -101,8 +117,22 @@ exports.addEmployee = async function addEmployee(client, name, pass, role, avail
         role: role,
         availability: availability,
     };
-    await collection.insertOne(doc);
+    var result = await collection.insertOne(doc);
     console.log("[addEmployee] Added employee!");
+    return(result.insertedId);
+}
+
+exports.getEmployee = async function getEmployee(client, id) {
+    
+    const query = {_id: id}
+    var result = await client.db("AFRMS").collection("Employee").findOne(query);
+    return(result);
+}
+
+exports.getAllEmployees = async function getAllEmployees(client) {
+
+    var result = await client.db("AFRMS").collection("Employee").find();
+    return(result);
 }
 
 // takes client and a document with PIN data in it
@@ -138,22 +168,20 @@ exports.addPIN = async function addPIN(client, doc) {
         };
     } 
 
-    var userID = await client.db("AFRMS").collection("Users").findOne(query)._id;
+    var userID = await client.db("AFRMS").collection("Users").insertOne(userDoc).insertedId;
     doc.userID = userID;
-
-    await collection.insertOne(userDoc);
 
     console.log("[addPIN] adding PIN to database");
     var collection = client.db("AFRMS").collection("Person in Need");
-    await collection.insertOne(doc);
+    var result = await collection.insertOne(doc);
     console.log("[addPIN] added PIN!");
+    return(result.insertedId);
 }
 
 
 exports.addEvent = async function addEvent(client, doc) {
 
     console.log("[addEvent] adding event");
-    console.log(doc);
     
     var PIN = doc.PIN;
     var Employee = doc.Employee;
@@ -178,4 +206,22 @@ exports.updateEvent = async function updateEvent(client, event) {
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
 }
 
-//exports.addMission = async function addMission
+// add team
+// team doc should be of the format {createdBy: employee, members: [employee(s)]}
+exports.addTeam = async function addTeam(client, team) {
+
+    console.log("[addTeam] adding team");
+    result = await client.db("AFRMS").collection("Teams").insertOne(team);
+    return(result.insertedId);
+
+}
+
+// add mission
+// mission doc should be of the format {team: team, author: employee, events: [event(s)], status: int}
+exports.addMission = async function addMission(client, mission) {
+
+    console.log("[addMission] adding Mission");
+    result = await client.db("AFRMS").collection("Missions").insertOne(mission);
+    return(result.insertedId);
+
+}
