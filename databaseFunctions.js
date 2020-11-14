@@ -54,7 +54,7 @@ exports.findUser = async function findUser(client, name, pass) {
 
     console.log("[findUser] Checking if employee exists");
     const query = { name: name, password: pass };
-    var exists = await client.collection("Employee").findOne(query);
+    var exists = await client.db("AFRMS").collection("Employee").findOne(query);
     if (exists == null) {
         console.log("[findUser] The employee was not found");
         return;
@@ -151,9 +151,12 @@ exports.addPIN = async function addPIN(client, doc) {
 
 
 exports.addEvent = async function addEvent(client, doc) {
+
+    console.log("[addEvent] adding event");
+    console.log(doc);
     
     var PIN = doc.PIN;
-    var Employee = doc.employee;
+    var Employee = doc.Employee;
 
     if (PIN == null | Employee == null) {
         console.log("[addEvent] PIN or Employee ID missing!");
@@ -163,8 +166,7 @@ exports.addEvent = async function addEvent(client, doc) {
     var collection = client.db("AFRMS").collection("Events");
     var result = await collection.insertOne(doc);
     console.log("[addEvent] added event!");
-    console.log(result);
-
+    return(result.insertedId);
 }
 
 exports.updateEvent = async function updateEvent(client, event) {
