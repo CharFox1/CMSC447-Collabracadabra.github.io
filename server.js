@@ -4,7 +4,7 @@ const { request } = require('express');
 const { Timestamp } = require('mongodb');
 const app = express();
 
-//app.set('view engine', 'ejs');
+app.set('view engine', 'ejs');
 
 //app.use(express.urlencoded({
 //    extended: true
@@ -22,6 +22,11 @@ function main() {
 //        app.get('/', function (req, res) { res.render(__dirname + '/views/pages/signInPage.html'); });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
 //        app.get('/createUser', function (req, res) { res.render(__dirname + '/views/pages/createUser.html'); });
 
+        app.get('/', function (req, res) { res.render('pages/signinPage'); });
+        app.get('/createUser', function (req, res) { res.render('pages/createUser'); });
+        app.get('/submitEvent', function (req, res) { res.render('pages/submitEvent'); });
+//        app.get('/home/pin', function (req, res) { res.render('pages/pinMenu/pinMenu'); });
+
         app.use(bodyParser.urlencoded({ extended: true }));
         var userID = signIn(client);
 
@@ -32,7 +37,8 @@ function main() {
 function signIn(client) {
     console.log("In sign in function");
 //    app.get('/', function (req, res) { res.sendFile(__dirname + '/views/pages/signInPage.html'); });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
-    app.get('/', (req, res) => { res.sendFile(__dirname + '/views/signinPage.html') });
+//    app.get('/', (req, res) => { res.sendFile(__dirname + '/views/signinPage.html') });
+//    app.get('/', function (req, res) { res.render('pages/signinPage'); });
     app.post('/Userlogin', async (req, res) => {
         var username = req.body.username;
         var pass = req.body.password;
@@ -57,7 +63,8 @@ function signIn(client) {
             console.log(user.role);
             if (user.role == "PIN") {
                 console.log("User role: PIN");
-                var eventID = submitEventPIN(client, user, req, res);
+                pinMenu(client, user, req, res);
+                //var eventID = submitEventPIN(client, user, req, res);
             }
             else if (user.role == "Operations Chief") {
                 console.log("User role: OC");
@@ -116,7 +123,7 @@ function signIn(client) {
 
 function submitEventPIN(client, user, req, res) {
 
-    app.get('/submitEvent', (req, res) => { res.sendFile(__dirname + '/views/submitEvent.html') });
+//    app.get('/submitEvent', (req, res) => { res.sendFile(__dirname + '/views/submitEvent.html') });
     res.redirect('/submitEvent');
     app.post('/SubmitEvent', async (req, res) => {
         var name = req.body.name;
@@ -160,9 +167,28 @@ function submitEventPIN(client, user, req, res) {
 
 }
 
+function pinMenu(client, user, req, res) {
+
+     //res.render('/home/pin');
+    app.get('/home/pin', function (req, res) {
+        var username = user.username;
+        var name = user.name;
+        var email = user.email;
+        var number = user.phone;
+
+        res.render('pages/pinMenu/pinMenu', {
+            username: username,
+            name: name,
+            email: email,
+            number: number
+        });
+    });
+
+}
+
 function ocMenu(client, user, req, res) {
     //The Operations Chief Needs a way to create missions, view missions and events, view the map, view the teams, assign the teams to missions.
-    app.get('/ocMenu', (req, res) => { res.sendFile(__dirname + '/views/ocMenu/ocMenu.html') });
+//    app.get('/ocMenu', (req, res) => { res.sendFile(__dirname + '/views/ocMenu/ocMenu.html') });
     res.redirect('/ocMenu');
     //Create a Mission:
     app.post('/CreateMission', async (req, res) => {
@@ -180,10 +206,10 @@ function ocMenu(client, user, req, res) {
 
     //View the Missions:
     app.post('/ViewMissions', async (req, res) => {
-        app.get('/', (req, res) => { var cursor = db.collection('quotes').find() })
+        app.get('/', (req, res) => { var cursor = db.collection('quotes').find() });
         db.collection('quotes').find().toArray(function (err, results) {
             console.log(results)  // send HTML file populated with quotes here})
-
+        });
     });
     //View the events:
     app.post('/ViewEvents', async (req, res) => {
