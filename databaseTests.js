@@ -30,13 +30,33 @@ async function main() {
         console.log("[dbTest] UserID to be used in updateEmployee test:", userID);
         await db.updateEmployee(client, userID, "test3", "test2", "some role", false);
 
-        await db.addEvent(client, {
+        var event = {
             PIN: 123,
             Employee: 456,
-            timestamp: time
-        })
+            timestamp: time,
+            location: "my house",
+            description: "not enough pizza",
+            severity: 5,
+            mission: null
+        };
+        await db.addEvent(client, event)
 
-        //await db.addEvent(client, 123, 456, time, "my house", "its lit", 69);
+        // returns list of employee docs 
+        var employees = await db.getAllEmployees(client);
+        console.log(employees);
+        var team = {
+            createdBy: employees[0],
+            members: employees
+        }
+        var teamID = await db.addTeam(client, team);
+
+        var mission = {
+            team: teamID,
+            author: employees[0],
+            events: [event],
+            status: "Urgent"
+        }
+        var mission = await db.addMission(client, mission);
 
     } catch (e) {
         console.error(e);
