@@ -54,7 +54,7 @@ exports.findUser = async function findUser(client, name, pass) {
 
     console.log("[findUser] Checking if employee exists");
     const query = { name: name, password: pass };
-    var exists = await client.collection("Employee").findOne(query);
+    var exists = await client.db("AFRMS").collection("Employee").findOne(query);
     if (exists == null) {
         console.log("[findUser] The employee was not found");
         return null;
@@ -151,9 +151,12 @@ exports.addPIN = async function addPIN(client, doc) {
 
 
 exports.addEvent = async function addEvent(client, doc) {
+
+    console.log("[addEvent] adding event");
+    console.log(doc);
     
     var PIN = doc.PIN;
-    var Employee = doc.employee;
+    var Employee = doc.Employee;
 
     if (PIN == null | Employee == null) {
         console.log("[addEvent] PIN or Employee ID missing!");
@@ -161,16 +164,18 @@ exports.addEvent = async function addEvent(client, doc) {
     }
 
     var collection = client.db("AFRMS").collection("Events");
-    await collection.insertOne(doc);
-    console.log("[addEvent] added event!")
-
+    var result = await collection.insertOne(doc);
+    console.log("[addEvent] added event!");
+    return(result.insertedId);
 }
 
 exports.updateEvent = async function updateEvent(client, event) {
 
-    result = await collection.updateOne( {_id: id}, 
-        {$set: {"_id": id, "name": name, "password":pass, "role":role}});
+    result = await collection.updateOne( {_id: event.id}, 
+        {$set: event});
     console.log("[updateEvent]:")
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
 }
+
+//exports.addMission = async function addMission
