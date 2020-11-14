@@ -16,6 +16,10 @@ exports.listDatabases = async function listDatabases(client) {
 
 exports.addUser = async function addUser(client, name, pass, role) {
 
+    if (name == null | pass == null) {
+        console.log("[addUser] name or password cannot be null!");
+    }
+
     console.log("[addUser] Checking if User already exists");
     const query = {name: name};
     var exists = await client.db("AFRMS").collection("Users").findOne(query);
@@ -142,7 +146,7 @@ exports.getEmployee = async function getEmployee(client, id) {
 
 exports.getAllEmployees = async function getAllEmployees(client) {
 
-    var result = await client.db("AFRMS").collection("Employee").find();
+    var result = await client.db("AFRMS").collection("Employee").find().toArray();
     return(result);
 }
 
@@ -223,6 +227,7 @@ exports.addTeam = async function addTeam(client, team) {
 
     console.log("[addTeam] adding team");
     result = await client.db("AFRMS").collection("Teams").insertOne(team);
+    console.log("[addTeam] team added!");
     return(result.insertedId);
 
 }
