@@ -117,8 +117,22 @@ exports.addEmployee = async function addEmployee(client, name, pass, role, avail
         role: role,
         availability: availability,
     };
-    await collection.insertOne(doc);
+    var result = await collection.insertOne(doc);
     console.log("[addEmployee] Added employee!");
+    return(result.insertedId);
+}
+
+exports.getEmployee = async function getEmployee(client, id) {
+    
+    const query = {_id: id}
+    var result = await client.db("AFRMS").collection("Employee").findOne(query);
+    return(result);
+}
+
+exports.getAllEmployees = async function getAllEmployees(client) {
+
+    var result = await client.db("AFRMS").collection("Employee").find();
+    return(result);
 }
 
 // takes client and a document with PIN data in it
@@ -154,15 +168,14 @@ exports.addPIN = async function addPIN(client, doc) {
         };
     } 
 
-    var userID = await client.db("AFRMS").collection("Users").findOne(query)._id;
+    var userID = await client.db("AFRMS").collection("Users").insertOne(userDoc).insertedId;
     doc.userID = userID;
-
-    await collection.insertOne(userDoc);
 
     console.log("[addPIN] adding PIN to database");
     var collection = client.db("AFRMS").collection("Person in Need");
-    await collection.insertOne(doc);
+    var result = await collection.insertOne(doc);
     console.log("[addPIN] added PIN!");
+    return(result.insertedId);
 }
 
 
