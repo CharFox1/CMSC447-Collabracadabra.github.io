@@ -36,6 +36,17 @@ exports.addUser = async function addUser(client, name, pass, role) {
     
 }
 
+exports.getUser = async function getUser(client, userID) {
+
+    console.log("[getUser] finding team");
+    var exists = await client.db("AFRMS").collection("Users").findOne({_id: userID});
+    if (exists == null) {
+        console.log("[getUser] there is no team with this id!");
+        return;
+    }
+    return(exists);
+}
+
 exports.updateRole = async function updateRole(client, id, role) {
 
     console.log("[updateRole] Checking if User already exists");
@@ -214,6 +225,17 @@ exports.addTeam = async function addTeam(client, team) {
     result = await client.db("AFRMS").collection("Teams").insertOne(team);
     return(result.insertedId);
 
+}
+
+exports.getTeam = async function getTeam(client, teamID) {
+
+    console.log("[getTeam] finding team");
+    var exists = await client.db("AFRMS").collection("Teams").findOne({_id: teamID});
+    if (exists == null) {
+        console.log("[getTeam] there is no team with this id!");
+        return;
+    }
+    return(exists);
 }
 
 // add mission
