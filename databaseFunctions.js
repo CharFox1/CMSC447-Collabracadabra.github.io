@@ -14,10 +14,10 @@ exports.listDatabases = async function listDatabases(client) {
 // check if each table exists and add it if not
 // don't need to do this.  Mongo automatically creates collections as needed
 
-exports.addUser =  async function addUser(client, name, pass, role) {
+exports.addUser = async function addUser(client, name, pass, role) {
 
     console.log("[addUser] Checking if User already exists");
-    const query = {name: name, password: pass, role: role};
+    const query = {name: name};
     var exists = await client.db("AFRMS").collection("Users").findOne(query);
     if (exists != null) {
         console.log("[addUser] This User already exists!");
@@ -30,9 +30,25 @@ exports.addUser =  async function addUser(client, name, pass, role) {
         password: pass,
         role: role
     };
-    await collection.insertOne(doc);
+    result = await collection.insertOne(doc);
     console.log("[addUser] added User!");
+    return (result.insertedId);
     
+}
+
+exports.updateRole = async function updateRole(client, id, role) {
+
+    console.log("[updateRole] Checking if User already exists");
+    const query = {_id: id};
+    var collection = client.db("AFRMS").collection("Users");
+    var exists = await collection.findOne(query);
+    if (exists == null) {
+        console.log("[updateRole] This User does not exist!");
+        return;
+    }
+
+    result = await collection.updateOne(query, {$set: {role: role}});
+
 }
 
 exports.updateEmployee = async function updateEmployee(client, id, name, pass, role, availability) {
