@@ -57,7 +57,7 @@ exports.findUser = async function findUser(client, name, pass) {
     var exists = await client.collection("Employee").findOne(query);
     if (exists == null) {
         console.log("[findUser] The employee was not found");
-        return;
+        return null;
     }
     else {
         //GO TO NEXT PAGE
