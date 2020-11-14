@@ -165,3 +165,12 @@ exports.addEvent = async function addEvent(client, doc) {
     console.log("[addEvent] added event!")
 
 }
+
+exports.updateEvent = async function updateEvent(client, event) {
+
+    result = await collection.updateOne( {_id: id}, 
+        {$set: {"_id": id, "name": name, "password":pass, "role":role}});
+    console.log("[updateEvent]:")
+    console.log(`${result.matchedCount} document(s) matched the query criteria.`);
+    console.log(`${result.modifiedCount} document(s) was/were updated.`);
+}
