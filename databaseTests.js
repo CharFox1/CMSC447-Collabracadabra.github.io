@@ -42,8 +42,7 @@ async function main() {
         await db.addEvent(client, event)
 
         // returns list of employee docs 
-        var employees = await db.getAllEmployees(client);
-        console.log(employees);
+        var employees = await db.getAllEmployees(client); 
         var team = {
             createdBy: employees[0],
             members: employees

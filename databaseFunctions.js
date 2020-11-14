@@ -234,10 +234,10 @@ exports.addTeam = async function addTeam(client, team) {
 
 exports.getTeam = async function getTeam(client, teamID) {
 
-    console.log("[getTeam] finding team");
+    console.log("[getTeam] finding Team");
     var exists = await client.db("AFRMS").collection("Teams").findOne({_id: teamID});
     if (exists == null) {
-        console.log("[getTeam] there is no team with this id!");
+        console.log("[getTeam] there is no Team with this id!");
         return;
     }
     return(exists);
@@ -251,4 +251,24 @@ exports.addMission = async function addMission(client, mission) {
     result = await client.db("AFRMS").collection("Missions").insertOne(mission);
     return(result.insertedId);
 
+}
+
+exports.getMission = async function getMission(client, missionID) {
+    
+    console.log("[getMission] finding Mission");
+    var exists = await client.db("AFRMS").collection("Missions").findOne({_id: missionID});
+    if (exists == null) {
+        console.log("[getMission] there is no Mission with this id!");
+        return;
+    }
+    return(exists);
+}
+
+exports.updateMission = async function updateMission(client, mission) {
+    
+    result = await collection.updateOne( {_id: mission.id}, 
+        {$set: mission});
+    console.log("[updateMission]:")
+    console.log(`${result.matchedCount} document(s) matched the query criteria.`);
+    console.log(`${result.modifiedCount} document(s) was/were updated.`);
 }
