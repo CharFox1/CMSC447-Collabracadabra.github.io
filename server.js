@@ -3,15 +3,9 @@ const bodyParser = require('body-parser');
 const { request } = require('express');
 const app = express();
 
-//const MongoClient = require('mongodb').MongoClient
-//MongoClient.connect('mongodb + srv://Admin:password@cluster0.ejcge.mongodb.net/<dbname>?retryWrites=true&w=majority', (err, database) => {
-//    if (err) {
-//        return console.log(err);
-//    }
-//    db = database;
-//    app.listen(3000, function () { console.log('listing on 3000') });
-
-//});
+app.use(express.urlencoded({
+    extended: true
+}));
 
 function main() {
     const MongoClient = require('mongodb').MongoClient;
@@ -22,26 +16,11 @@ function main() {
         var client = client;
         app.listen(3000, () => { console.log('listening on 3000') });
 
+//        app.get('/', function (req, res) { res.render(__dirname + '/views/pages/signInPage.html'); });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
+//        app.get('/createUser', function (req, res) { res.render(__dirname + '/views/pages/createUser.html'); });
+
         app.use(bodyParser.urlencoded({ extended: true }))
         var employeeID = signIn(client);
-
-        /*
-        app.get('/', (req, res) => { res.sendFile(__dirname + '/signInPage.html') });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
-        app.post('/User', (req, res) => {
-            var username = req.body.username;
-            var pass = req.body.password;
-            console.log("Checking if the user exists");
-            //const query = { name: username, password: pass };
-    
-            
-    
-            db.collection('Users').findOne(query, function (findErr, result) {
-                if (findErr) throw findErr;
-                console.log(result.role);
-                //         client.close();
-            });
-        });
-        */
 
     });
 }
@@ -49,7 +28,9 @@ function main() {
 
 function signIn(client) {
     console.log("In sign in function");
-    app.get('/', (req, res) => { res.sendFile(__dirname + '/signInPage.html') });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
+    var createUser = false;
+//    app.get('/', function (req, res) { res.sendFile(__dirname + '/views/pages/signInPage.html'); });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
+    app.get('/', (req, res) => { res.sendFile(__dirname + '/signinPage.html') });
     app.post('/Userlogin', async (req, res) => {
         var username = req.body.username;
         var pass = req.body.password;
@@ -58,7 +39,9 @@ function signIn(client) {
 //            var userID = createUser();
 //        }
 
-
+        console.log("Searching for user: ");
+        console.log(username);
+        console.log(pass);
         var dataFunc = require("./databaseFunctions");
         var userID = await dataFunc.findUser(client, username, pass);
 
@@ -75,11 +58,33 @@ function signIn(client) {
             console.log("Found Employee!");
             return userID;
         }
+        res.end();
     });
 
-    app.post('/CreateUser', async (req, res) => {
+    app.post('/createUser', async (req, res) => {
         console.log("In create user post");
-        var userID = await createUser(client);
+        //app.get('/createUser', (req, res) => { res.sendFile(__dirname + '/createUser.html') });
+        //res.redirect('/createUser');
+        //var userID = await createUserFunc(client);
+
+        var username = req.body.username;
+        var pass = req.body.password;
+
+        app.get('/createUser', (req, res) => { res.sendFile(__dirname + '/createUser.html') });
+        res.redirect('/createUser');
+
+        var dataFunc = require("./databaseFunctions");
+        var userID = await dataFunc.addUser(client, username, pass, "PIN");
+
+        if (userID == null) {
+            console.log("Username unavailable");
+            return null;
+        }
+        else {
+            console.log("Successfully created a new user");
+            signIn(client);
+        }
+
         if (userID == null) {
             console.log("Unable to create user");
             //app.put('/Userlogin', (req, res) => {
@@ -91,17 +96,26 @@ function signIn(client) {
             console.log("User created successfully");
             return userID;
         }
-
+        res.end();
     });
 }
-
-function createUser(client) {
+/*
+function createUserFunc(client, req, res) {
     console.log("In createUserFunc");
-    app.get('/', (req, res) => { res.sendFile(__dirname + '/createUser.html') });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
-    app.post('/createUser', async (req, res) => {
+//    app.get('/', (req, res) => { res.redirect(__dirname + '/createUser.html') });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
+//    res.redirect('public/createUser.html');
+//    app.get('/createUser', function (req, res) { res.sendFile(__dirname + '/views/pages/createUser.html'); });
+    app.get('/createUser', (req, res) => { res.sendFile(__dirname + '/createUser.html') });
+//    app.get('/', function (req, res) { res.redirect('/createUser.html'); }); 
+    res.redirect('/createUser');
+    console.log("Before post");
+    app.post('/CreateUser', async function (req, res) {
+        console.log("In create user post2");
         var username = req.body.username;
         var pass = req.body.password;
 
+        console.log(username);
+        console.log(pass);
         var dataFunc = require("./databaseFunctions");
         var userID = await dataFunc.addUser(client, username, pass, "PIN");
 
@@ -111,8 +125,11 @@ function createUser(client) {
         }
         else {
             console.log("Successfully created a new user");
-            return userID;
+            signIn(client);
         }
+        res.end();
     });
+    console.log("After post");
 }
+*/
 main();
