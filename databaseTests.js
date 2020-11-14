@@ -16,12 +16,13 @@ async function main() {
         var time = new Date();
         
         // await function calls
-        await db.addEmployee(client, "test2", "test2", "Operations Chief", true);
-        await db.addEmployee(client, "test3", "test2", "Operations Chief", true);
+        await db.addEmployee(client, "test2", "test2", "Harold", "Operations Chief", true);
+        await db.addEmployee(client, "test3", "test2", "Barold", "Operations Chief", true);
 
         await db.addPIN(client, {
-            name: "test4",
+            username: "test4",
             password: "test4",
+            name: "grandma",
             phone: 1234567890,
             age: "old"
         });
