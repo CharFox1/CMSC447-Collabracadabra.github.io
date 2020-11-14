@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { request } = require('express');
+const { Timestamp } = require('mongodb');
 const app = express();
 
 app.use(express.urlencoded({
@@ -19,14 +20,8 @@ function main() {
 //        app.get('/', function (req, res) { res.render(__dirname + '/views/pages/signInPage.html'); });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
 //        app.get('/createUser', function (req, res) { res.render(__dirname + '/views/pages/createUser.html'); });
 
-        app.use(bodyParser.urlencoded({ extended: true }))
-        var dataFunc = require("./databaseFunctions");
+        app.use(bodyParser.urlencoded({ extended: true }));
         var userID = signIn(client);
-        if (userID != null) {
-            //GO TO THE MENU PAGE
-
-            if (  )
-        }
 
     });
 }
@@ -34,51 +29,66 @@ function main() {
 
 function signIn(client) {
     console.log("In sign in function");
-    var createUser = false;
 //    app.get('/', function (req, res) { res.sendFile(__dirname + '/views/pages/signInPage.html'); });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
     app.get('/', (req, res) => { res.sendFile(__dirname + '/signinPage.html') });
     app.post('/Userlogin', async (req, res) => {
         var username = req.body.username;
         var pass = req.body.password;
         console.log("username and pass are set");
-//        if (document.getElementById('createUser').clicked == true) {
-//            var userID = createUser();
-//        }
 
         console.log("Searching for user: ");
         console.log(username);
         console.log(pass);
+        var dataFunc = require("./databaseFunctions");
         var userID = await dataFunc.findUser(client, username, pass);
 
         //If employeeID is null that means that either the username or password were incorrect
         console.log(userID);
         if (userID == null) {
-            console.log("Did not find an employee");
-            //app.put('/Userlogin', (req, res) => {
-            //    req.body.errMsg = "Insert a Valid Username and Password"
-            //});
-            return null;
+            console.log("Did not find an User");
+            //return null;
         }
         else {
-            console.log("Found Employee!");
-            return userID;
+            console.log("Found User!");
+            //GO TO THE MENU PAGE
+            var user = await dataFunc.getUser(client, userID);
+            console.log(user.role);
+            if (user.role == "PIN") {
+                console.log("User role: PIN");
+                var eventID = submitEventPIN(client, user, req, res);
+            }
+            else if (user.role == "Operations Chief") {
+                console.log("User role: OC");
+                ocMenu(client, user, req, res);
+
+            }
+            else if (user.role == "Dispatcher") {
+                console.log("User role: Dispatcher");
+                dispMenu(client, user, req, res);
+
+            }
+            else if (user.role == "First Responder") {
+                console.log("User role: First Responder");
+                frMenu(client, user, req, res);
+
+            }
+            else if (user.role == "Admin") {
+                console.log("User role: Admin");
+                adminMenu(client, user, req, res);
+
+            }
         }
         res.end();
     });
 
     app.post('/createUser', async (req, res) => {
-        console.log("In create user post");
-        //app.get('/createUser', (req, res) => { res.sendFile(__dirname + '/createUser.html') });
-        //res.redirect('/createUser');
-        //var userID = await createUserFunc(client);
-
         var username = req.body.username;
         var pass = req.body.password;
 
         app.get('/createUser', (req, res) => { res.sendFile(__dirname + '/createUser.html') });
         res.redirect('/createUser');
 
-//        var dataFunc = require("./databaseFunctions");
+        var dataFunc = require("./databaseFunctions");
         var userID = await dataFunc.addUser(client, username, pass, "PIN");
 
         if (userID == null) {
@@ -92,9 +102,6 @@ function signIn(client) {
 
         if (userID == null) {
             console.log("Unable to create user");
-            //app.put('/Userlogin', (req, res) => {
-            //    req.body.errMsg = "Insert a Valid Username and Password"
-            //});
             return null;
         }
         else {
@@ -104,37 +111,89 @@ function signIn(client) {
         res.end();
     });
 }
-/*
-function createUserFunc(client, req, res) {
-    console.log("In createUserFunc");
-//    app.get('/', (req, res) => { res.redirect(__dirname + '/createUser.html') });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
-//    res.redirect('public/createUser.html');
-//    app.get('/createUser', function (req, res) { res.sendFile(__dirname + '/views/pages/createUser.html'); });
-    app.get('/createUser', (req, res) => { res.sendFile(__dirname + '/createUser.html') });
-//    app.get('/', function (req, res) { res.redirect('/createUser.html'); }); 
-    res.redirect('/createUser');
-    console.log("Before post");
-    app.post('/CreateUser', async function (req, res) {
-        console.log("In create user post2");
-        var username = req.body.username;
-        var pass = req.body.password;
 
-        console.log(username);
-        console.log(pass);
+function submitEventPIN(client, user, req, res) {
+
+    app.get('/submitEvent', (req, res) => { res.sendFile(__dirname + '/submitEvent.html') });
+    res.redirect('/submitEvent');
+    app.post('/SubmitEvent', async (req, res) => {
+        var name = req.body.name;
+        var number = req.body.number;
+        var email = req.body.email;
+        var location = req.body.location;
+        var desc = req.body.description;
+        var time = new Date();
+
         var dataFunc = require("./databaseFunctions");
-        var userID = await dataFunc.addUser(client, username, pass, "PIN");
 
-        if (userID == null) {
-            console.log("Username unavailable");
-            return null;
+        if (name != null & location != null & desc != null) {
+            var eventID = await dataFunc.addEvent(client, {
+                PIN: user.userID,
+                PIN_Name: name,
+                Number: number,
+                Email: email,
+                Location: location,
+                Description: desc,
+                timestamp: time,
+                EmployeeIDCheck: null
+            });
+
+            if (eventID != null) {
+                console.log("Created a new event");
+                return eventID;
+            }
+            else {
+                console.log("Failed to create a new event");
+                return null;
+            }
         }
         else {
-            console.log("Successfully created a new user");
-            signIn(client);
+            console.log("Please insert a name, location, and description for the event.");
+            return null;
         }
-        res.end();
+
     });
-    console.log("After post");
+
 }
-*/
+
+function ocMenu(client, user, req, res) {
+    //The Operations Chief Needs a way to create missions, view missions and events, view the map, view the teams, assign the teams to missions.
+    app.get('/ocMenu', (req, res) => { res.sendFile(__dirname + '/ocMenu.html') });
+    res.redirect('/ocMenu');
+    //Create a Mission:
+    app.post('/CreateMission', async (req, res) => {
+        createMission(client, user, req, res);
+    });
+
+    //View the Missions:
+    app.post('/ViewMissions', async (req, res) => {
+
+    });
+    //View the events:
+    app.post('/ViewEvents', async (req, res) => {
+
+    });
+    //View the teams:
+    app.post('/ViewTeams', async (req, res) => {
+
+    });
+    //Assign teams to missions:
+    app.post('/AssignTeams', async (req, res) => {
+
+    });
+
+}
+
+function dispMenu(client, user, req, res) {
+
+}
+
+function frMenu(client, user, req, res) {
+
+}
+
+function adminMenu(client, user, req, res) {
+
+}
+
 main();
