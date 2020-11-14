@@ -161,16 +161,19 @@ exports.addEvent = async function addEvent(client, doc) {
     }
 
     var collection = client.db("AFRMS").collection("Events");
-    await collection.insertOne(doc);
-    console.log("[addEvent] added event!")
+    var result = await collection.insertOne(doc);
+    console.log("[addEvent] added event!");
+    console.log(result);
 
 }
 
 exports.updateEvent = async function updateEvent(client, event) {
 
-    result = await collection.updateOne( {_id: id}, 
-        {$set: {"_id": id, "name": name, "password":pass, "role":role}});
+    result = await collection.updateOne( {_id: event.id}, 
+        {$set: event});
     console.log("[updateEvent]:")
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
 }
+
+//exports.addMission = async function addMission
