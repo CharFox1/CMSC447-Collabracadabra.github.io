@@ -1,4 +1,3 @@
-console.log('Connected to the server');
 const express = require('express');
 const bodyParser = require('body-parser');
 const { request } = require('express');
@@ -14,15 +13,17 @@ const app = express();
 
 //});
 
-async function main() {
+function main() {
     const MongoClient = require('mongodb').MongoClient;
     MongoClient.connect('mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/<dbname>?retryWrites=true&w=majority', (err, client) => {
+        console.log('Connected to the server');
         if (err) return console.log(err);
-        var db = client.db('AFRMS');
+ //       var db = client.db('AFRMS');
+        var client = client;
         app.listen(3000, () => { console.log('listening on 3000') });
 
         app.use(bodyParser.urlencoded({ extended: true }))
-        var employeeID = await signIn(db);
+        var employeeID = signIn(client);
 
         /*
         app.get('/', (req, res) => { res.sendFile(__dirname + '/signInPage.html') });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
@@ -44,17 +45,17 @@ async function main() {
 
     });
 }
-main().catch(console.error);
+main();
 
-async function signIn(db) {
+function signIn(client) {
     app.get('/', (req, res) => { res.sendFile(__dirname + '/signInPage.html') });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
-    app.post('/Userlogin', (req, res) => {
+    app.post('/Userlogin', async (req, res) => {
         var username = req.body.username;
         var pass = req.body.password;
     
 
         var dataFunc = require("./databaseFunctions");
-        var employeeID = await dataFunc.findUser(db, username, pass);
+        var employeeID = await dataFunc.findUser(client, username, pass);
 
         //If employeeID is null that means that either the username or password were incorrect
         console.log(employeeID);
