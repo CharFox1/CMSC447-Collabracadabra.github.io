@@ -2,7 +2,7 @@
 
 const { time } = require("console");
 
-const tables = ["Users", "Employee", "PersonInNeed", "Teams", "Events", "Missions"]
+const tables = ["Users", "Employee", "PIN", "Teams", "Events", "Missions"]
 
 exports.listDatabases = async function listDatabases(client) {
     databasesList = await client.db().admin().listDatabases();

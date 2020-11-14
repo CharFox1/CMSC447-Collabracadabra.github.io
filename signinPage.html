@@ -33,9 +33,14 @@
                     </div>
                 </div>
                 <br>
-                <button type="submit">Sign In</button>
-                <p id="errMsg"></p>
+                <button type="submit" name="signIn">Sign In</button>
             </div>
         </form>
+        <form action="/createUser" method="POST">
+            <div class="container text-center">
+                <button type="submit" name="createUser" onclick="createUser()">Create an Account</button>
+            </div>
+        </form>
+
     </body>
 </html>

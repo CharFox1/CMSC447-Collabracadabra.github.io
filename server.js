@@ -45,30 +45,74 @@ function main() {
 
     });
 }
-main();
+
 
 function signIn(client) {
+    console.log("In sign in function");
     app.get('/', (req, res) => { res.sendFile(__dirname + '/signInPage.html') });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
     app.post('/Userlogin', async (req, res) => {
         var username = req.body.username;
         var pass = req.body.password;
-    
+        console.log("username and pass are set");
+//        if (document.getElementById('createUser').clicked == true) {
+//            var userID = createUser();
+//        }
+
 
         var dataFunc = require("./databaseFunctions");
-        var employeeID = await dataFunc.findUser(client, username, pass);
+        var userID = await dataFunc.findUser(client, username, pass);
 
         //If employeeID is null that means that either the username or password were incorrect
-        console.log(employeeID);
-        if (employeeID == null) {
+        console.log(userID);
+        if (userID == null) {
             console.log("Did not find an employee");
-            app.put('/Userlogin', (req, res) => {
-                req.body.errMsg = "Insert a Valid Username and Password"
-            });
+            //app.put('/Userlogin', (req, res) => {
+            //    req.body.errMsg = "Insert a Valid Username and Password"
+            //});
             return null;
         }
         else {
             console.log("Found Employee!");
-            return employeeID;
+            return userID;
+        }
+    });
+
+    app.post('/CreateUser', async (req, res) => {
+        console.log("In create user post");
+        var userID = await createUser(client);
+        if (userID == null) {
+            console.log("Unable to create user");
+            //app.put('/Userlogin', (req, res) => {
+            //    req.body.errMsg = "Insert a Valid Username and Password"
+            //});
+            return null;
+        }
+        else {
+            console.log("User created successfully");
+            return userID;
+        }
+
+    });
+}
+
+function createUser(client) {
+    console.log("In createUserFunc");
+    app.get('/', (req, res) => { res.sendFile(__dirname + '/createUser.html') });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
+    app.post('/createUser', async (req, res) => {
+        var username = req.body.username;
+        var pass = req.body.password;
+
+        var dataFunc = require("./databaseFunctions");
+        var userID = await dataFunc.addUser(client, username, pass, "PIN");
+
+        if (userID == null) {
+            console.log("Username unavailable");
+            return null;
+        }
+        else {
+            console.log("Successfully created a new user");
+            return userID;
         }
     });
 }
+main();
