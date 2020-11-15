@@ -27,9 +27,6 @@ function main() {
 
 function signIn(client) {
     console.log("In sign in function");
-//    app.get('/', function (req, res) { res.sendFile(__dirname + '/views/pages/signInPage.html'); });  // Note: __dirname is the path to your current working directory. Try logging it and see what you get!
-//    app.get('/', (req, res) => { res.sendFile(__dirname + '/views/signinPage.html') });
-//    app.get('/', function (req, res) { res.render('pages/signinPage'); });
     app.post('/Userlogin', async (req, res) => {
         var username = req.body.username;
         var pass = req.body.password;
@@ -185,8 +182,6 @@ function submitEventPIN(client, user, req, res) {
 
 function ocMenu(client, user, req, res) {
     //The Operations Chief Needs a way to create missions, view missions and events, view the map, view the teams, assign the teams to missions.
-    //app.get('/home/pin/newEvent', function (req, res) { res.render('pages/pinMenu/pinNewEvent', submitEventPIN(client, user, req, res)); });
-    //app.get('/home/oc/viewEvents', function (req, res) { res.render('pages/ocMenu/viewEvents', { events: events }, viewEvents(client, user, req, res)); });
     app.get('/home/oc', async function (req, res) {
         //Inside of create a Mission the Operations Chief will need to select a team, and select an array of events to place inside of the mission.
         //Get an array of all events that have been checked by a dispatcher and have yet to be assigned to a mission.
@@ -215,26 +210,66 @@ function ocMenu(client, user, req, res) {
             });
         });
     });
-    res.redirect('/home/oc');
-}
-/*
-function viewEvents(client, user, req, res) {
-    //Sends an array to the ejs file so that it outputs all of the events.
-    app.get('/home/oc/viewEvents', async function (req, res) {      
-        await client.db("AFRMS").collection("Events").find().toArray(function (err, events) {
+    app.get('/home/oc/viewFR', async function (req, res) {
+        await client.db("AFRMS").collection("Teams").find().toArray(function (err, teams) {
 
-            res.render('pages/ocMenu/viewEvents', {
-                events: events
+            res.render('pages/ocMenu/viewFR', {
+                teams: teams
             });
         });
-
     });
 
+    app.get('/home/oc/createMission', async function (req, res) {
+        await client.db("AFRMS").collection("Events").find().toArray(function (err, events) {
+            res.render('pages/ocMenu/createMission', {
+                eventsList: [],
+                events: events
+            }, createMission(client, user, req, res));
+        });
+    });
+
+    res.redirect('/home/oc');
 }
-*/
 
 function createMission(client, user, req, res) {
+    app.post('/createMission', async (req, res) => {
+        var teamname = req.body.teamname;
+        var status = req.body.status;
+        var dataFunc = require("./databaseFunctions");
+        var team = await dataFunc.getTeam(client, null, teamname);
+        var teamID = team._id;
+        var eventsListID = req.body.eventIDs;
+        var eventsList = [];
+        console.log(eventsListID[0])
+        for (i in eventsListID) {
+            console.log(eventsListID[i]);
+            eventsList.push(await dataFunc.getEvent(client, eventsListID[i]));
+        }
 
+        if (teamname != null & teamID != null ) {
+            var missionID = await dataFunc.addMission(client, {
+                teamName: teamname,
+                teamID: teamID,
+                author: user,
+                events: eventsList,
+                status: status
+            });
+
+            if (missionID != null) {
+                console.log("Created a new mission");
+                return missionID;
+            }
+            else {
+                console.log("Failed to create a new mission");
+                return null;
+            }
+        }
+        else {
+            console.log("Please insert a valid team for the mission.");
+            return null;
+        }
+
+    });
 
 }
 

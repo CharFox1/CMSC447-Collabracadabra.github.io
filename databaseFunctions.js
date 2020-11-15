@@ -148,6 +148,13 @@ exports.getEmployee = async function getEmployee(client, id) {
     return(result);
 }
 
+exports.getEvent = async function getEvent(client, id) {
+
+    const query = { _id: id }
+    var result = await client.db("AFRMS").collection("Events").findOne(query);
+    return (result);
+}
+
 exports.getAllEmployees = async function getAllEmployees(client) {
 
     var result = await client.db("AFRMS").collection("Employee").find().toArray();
@@ -238,13 +245,24 @@ exports.addTeam = async function addTeam(client, team) {
 
 }
 
-exports.getTeam = async function getTeam(client, teamID) {
+exports.getTeam = async function getTeam(client, teamID, teamName) {
 
     console.log("[getTeam] finding Team");
-    var exists = await client.db("AFRMS").collection("Teams").findOne({_id: teamID});
-    if (exists == null) {
-        console.log("[getTeam] there is no Team with this id!");
-        return;
+    console.log(teamID)
+    if (teamID != null) {
+        var exists = await client.db("AFRMS").collection("Teams").findOne({ _id: teamID });
+        if (exists == null) {
+            console.log("[getTeam] there is no Team with this id!");
+            return;
+        }
+    }
+    else {
+        console.log(teamName);
+        var exists = await client.db("AFRMS").collection("Teams").findOne({ name: teamName });
+        if (exists == null) {
+            console.log("[getTeam] there is no Team with this name!");
+            return;
+        }
     }
     return(exists);
 }
