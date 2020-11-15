@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>AFRMS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <%- include('../../Partials/head'); %>
+    </head>
+    <body class="container">
+
+
+        <header>
+        <%- include('../../Partials/DISPheader'); %>
+        </header>
+
+
+        <main>
+            <div class="jumbotron">
+            <h1>Events</h1>
+                <% events.forEach(function(event) { %>              
+                    <strong>Severity Level: <%= event.severity %></strong>
+                    <p>Location: <%= event.location %> </p>
+                    <p>Description: <%= event.description %> </p>
+                    <p>Person In Need: <%= event.PIN %> </p>
+                    <p>Time: <%= event.timestamp %> </p>
+                    <p>EmployeeCheck: <%= event.Employee %> </p>
+                    <p>Mission: <%= event.mission %> </p>
+                    <% }); %>
+            </div>
+        </main>
+
+        <footer>
+        <%- include('../../Partials/footer'); %>
+        </footer> 
+    </body>
+</html>

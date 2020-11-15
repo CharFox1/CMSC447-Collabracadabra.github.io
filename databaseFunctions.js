@@ -1,6 +1,7 @@
 // This file has all the functions for creating and interacting with the tables in mongodb
 
 const { time } = require("console");
+const { ObjectID } = require("mongodb");
 
 const tables = ["Users", "Employee", "PIN", "Teams", "Events", "Missions"]
 
@@ -153,15 +154,20 @@ exports.addEmployee = async function addEmployee(client, username, pass, name, r
 
 exports.getEmployee = async function getEmployee(client, id) {
     
-    const query = {_id: id}
+    const query = { _id: id }
     var result = await client.db("AFRMS").collection("Employee").findOne(query);
     return(result);
 }
 
 exports.getEvent = async function getEvent(client, id) {
 
-    const query = { _id: id }
+    var fixID = ObjectID(id);
+    const query = { _id: fixID }
     var result = await client.db("AFRMS").collection("Events").findOne(query);
+    if (result == null) {
+        console.log("result is null");
+        console.log(id);
+    }
     return (result);
 }
 
@@ -235,7 +241,7 @@ exports.addEvent = async function addEvent(client, doc) {
 
 exports.updateEvent = async function updateEvent(client, event) {
 
-    result = await collection.updateOne( {_id: event.id}, 
+    result = await client.db("AFRMS").collection("Events").updateOne({ _id: event._id }, 
         {$set: event});
     console.log("[updateEvent]:")
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);

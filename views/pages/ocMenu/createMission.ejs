@@ -22,12 +22,11 @@
             <div class = "row">
                 <div class = "col-sm-8">
                     <div class="jumbotron">
-                    <form action="/createMission" method="POST">          
+                    <form action="/createMission" method="POST"> 
                         <h1>Create New Mission</h1>
                         <p>Team Name: <input type="text" name="teamname"></p>
-                        <p>Status: <input type="text" name="status"></p>                                      
-                        <h3>Event IDs: </h3>
-                        <ul id="eventIDs">
+                        <p>Status: <input type="text" name="status"></p>
+                         <ul id ="eventIDs" name ="events" > 
                          </ul>
                         
            
@@ -37,16 +36,34 @@
                 </div>
             <div class="col-sm-4">
                 <div class="well">
-                     <h1>Events</h1>
+                     <h1>Available First Responder Teams</h1>
+                        <ul>
+                        <% teams.forEach(function(team) { %>              
+                            <strong>Team Name: <%= team.name %></strong>
+                            <p>Team Type: <%= team.type %>
+                            <p>Team Status: <%= team.availability %> </p>
+                            <p>Created By: <%= team.createdBy.name %> </p>
+                            <ul>
+                                <% team.members.forEach(function(member) { %>
+                                <li>
+                                Member: <%= member.name %>, Role: <%= member.role %>, Availability: <%= member.availability %>
+                                </li>
+                            <% }); %>
+                        </ul>
+                    <% }); %>
+                    
+                     <h1>Unassigned Events</h1>
                     <ul>
                         <% events.forEach(function(event) { %>
                         <p><strong>Severity: <%= event.severity %></strong></p>
                         <li> Event ID: <%=event._id %></li>
                         <li>
-                            Event Location: <%= event.location %>, Description <%= event.description %>, PIN: <%= event.PIN %>, Time: <%= event.timestamp %>
+                            Event Location: <%= event.location %>, Description: <%= event.description %>, Time: <%= event.timestamp %>
                         </li>
-                           <p><button type="submit" name="addEvent" onclick="addEventToMission(event._id)">Add Event</button></p>
-                           
+                            <form action="/ApproveEvent" method="POST">
+                            <input type ="hidden" name="EventID" id="id" value="<%=event._id%>">
+                            <button type="submit">Add Event</button>
+                            </form>
                     <% }); %>
                     </ul>
             </div>
@@ -56,15 +73,6 @@
         <footer>
         <%- include('../../Partials/footer'); %>
         </footer> 
-
-            <script>
-                function addEventToMission(eventID) {
-                    var li = document.createElement("LI");
-                    
-                    li.innerHTML = eventID;
-                    document.getElementById("eventIDs").appendChild(li);
-            }
-          </script>
-
+        
     </body>
 </html>

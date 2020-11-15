@@ -52,7 +52,6 @@ function signIn(client) {
             if (user.role == "PIN") {
                 console.log("User role: PIN");
                 pinMenu(client, user, req, res);
-                //var eventID = submitEventPIN(client, user, req, res);
             }
             else if (user.role == "Operations Chief") {
                 console.log("User role: OC");
@@ -220,11 +219,17 @@ function ocMenu(client, user, req, res) {
     });
 
     app.get('/home/oc/createMission', async function (req, res) {
-        await client.db("AFRMS").collection("Events").find().toArray(function (err, events) {
-            res.render('pages/ocMenu/createMission', {
-                eventsList: [],
-                events: events
-            }, createMission(client, user, req, res));
+        var query = { availability: true };
+        
+        query = { mission: null };
+        await client.db("AFRMS").collection("Events").find(query).toArray(function (err, events) {
+            client.db("AFRMS").collection("Teams").find(query).toArray(function (err, teams) {
+                res.render('pages/ocMenu/createMission', {
+                    eventsList: [],
+                    events: events,
+                    teams: teams
+                }, createMission(client, user, req, res));
+            });
         });
     });
 
@@ -232,15 +237,19 @@ function ocMenu(client, user, req, res) {
 }
 
 function createMission(client, user, req, res) {
+    var eventsListID = [];
+    app.post('/ApproveEvent', async (req, res) => {
+        eventsListID.push(req.body.EventID);
+    });
+
     app.post('/createMission', async (req, res) => {
         var teamname = req.body.teamname;
         var status = req.body.status;
         var dataFunc = require("./databaseFunctions");
         var team = await dataFunc.getTeam(client, null, teamname);
         var teamID = team._id;
-        var eventsListID = req.body.eventIDs;
+//        app.use(bodyParser.text({ type: 'text/html' }));
         var eventsList = [];
-        console.log(eventsListID[0])
         for (i in eventsListID) {
             console.log(eventsListID[i]);
             eventsList.push(await dataFunc.getEvent(client, eventsListID[i]));
@@ -270,11 +279,96 @@ function createMission(client, user, req, res) {
         }
 
     });
-
 }
 
 function dispMenu(client, user, req, res) {
+    app.get('/home/disp/createEvents', function (req, res) { res.render('pages/dispMenu/createEvent', createEvent(client, user, req, res)); });
+    app.get('/home/disp', async function (req, res) {
 
+        const query = { Employee: null };
+        await client.db("AFRMS").collection("Events").find(query).toArray(function (err, pendingEvents) {
+
+            res.render('pages/dispMenu/dispMenu', {
+                pendingEvents: pendingEvents
+            });
+        });
+    });
+    app.get('/home/disp/viewEvents', async function (req, res) {
+        await client.db("AFRMS").collection("Events").find().toArray(function (err, events) {
+
+            res.render('pages/dispMenu/viewEvents', {
+                events: events
+            });
+        });
+    });
+    app.get('/home/disp/approveEvents', async function (req, res) {
+        const query = { Employee: null };
+        await client.db("AFRMS").collection("Events").find(query).toArray(function (err, events) {
+
+            res.render('pages/dispMenu/approveEvents', {
+                events: events
+            }, approveEvent(client, user, req, res));
+        });
+    });
+    res.redirect('/home/disp');
+}
+
+function createEvent(client, user, req, res) {
+    app.post('/CreateEvent', async (req, res) => {
+        var name = req.body.name;
+        var email = req.body.email;
+        var number = req.body.number;
+        var location = req.body.location;
+        var desc = req.body.description;
+        var time = new Date();
+        var urgency = req.body.urgency;
+
+        var dataFunc = require("./databaseFunctions");
+
+        console.log(user._id);
+        console.log(user.username);
+        if (name != null & location != null & desc != null & urgency != null) {
+            var eventID = await dataFunc.addEvent(client, {
+                PIN: user._id,
+                Username: user.username,
+                Name: name,
+                Number: number,
+                Email: email,
+                timestamp: time,
+                Location: location,
+                Description: desc,
+                severity: urgency,
+                mission: null,
+                Employee: user
+            });
+
+            if (eventID != null) {
+                console.log("Created a new event");
+                return eventID;
+            }
+            else {
+                console.log("Failed to create a new event");
+                return null;
+            }
+        }
+        else {
+            console.log("Please insert a name, location, and description for the event.");
+            return null;
+        }
+
+    });
+
+}
+function approveEvent(client, user, req, res) {
+    app.post('/ApproveEvent', async (req, res) => {
+        var severity = req.body.severity;
+        var eventID = req.body.EventID;
+        var dataFunc = require("./databaseFunctions");
+        var event = await dataFunc.getEvent(client, eventID);
+        event.severity = severity;
+        event.Employee = user;
+        await dataFunc.updateEvent(client, event);
+    });
 }
 
 function frMenu(client, user, req, res) {
