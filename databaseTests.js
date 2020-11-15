@@ -14,8 +14,21 @@ async function main() {
         await client.connect();
 
         var time = new Date();
-        
-        // await function calls
+
+        console.log("\n[[dbTest]] listing databases");
+        await db.listDatabases(client);
+
+        console.log("\n[dbTest] cleaning database");
+        await db.cleanDatabase(client);
+
+
+        console.log("\n[[dbTest]] adding users");
+        await db.addUser(client, null, null, "Mr. null", "default");
+        await db.addUser(client, "test1", "test1", "Mr. 1", "default");
+        await db.addUser(client, "test1", "test1", "Mr. 1", "default");
+        await db.addUser(client, "test1", "something different", "Mr. 1", "default");
+
+        console.log("\n[[dbTest]] adding employees");
         await db.addEmployee(client, "test2", "test2", "Harold", "Operations Chief", true);
         await db.addEmployee(client, "test3", "test2", "Barold", "Operations Chief", true);
 
@@ -28,7 +41,7 @@ async function main() {
         });
 
         var userID = await db.findUser(client, "test3", "test2");
-        console.log("[dbTest] UserID to be used in updateEmployee test:", userID);
+        console.log("\n[[dbTest]] UserID to be used in updateEmployee test:", userID);
         await db.updateEmployee(client, userID, "test3", "test2", "some role", false);
 
         var event = {
@@ -45,13 +58,16 @@ async function main() {
         // returns list of employee docs 
         var employees = await db.getAllEmployees(client); 
         var team = {
+            name: "cool team",
             createdBy: employees[0],
-            members: employees
+            members: employees,
+            availability: true
         }
         var teamID = await db.addTeam(client, team);
 
         var mission = {
-            team: teamID,
+            teamName: team.name,
+            teamID: teamID,
             author: employees[0],
             events: [event],
             status: "Urgent"

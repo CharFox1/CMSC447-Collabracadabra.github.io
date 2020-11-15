@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Log In - Alakazambulance - AFRMS</title>
+        <style type='text/css'>body{margin:0;padding:0;overflow:hidden;font-family:'Segoe UI',Helvetica,Arial,Sans-Serif}</style>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+        <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=Akk01vko6U7AknIQbuqPOOwSg2jiZwTKoqvkDKtrIB6i-An4f2J-n4-LKCFILYOD'></script>
+        <script type='text/javascript'>
+                var map;
+                function loadMapScenario() 
+                {
+                    map = new Microsoft.Maps.Map(document.getElementById('myMap'), {});
+                }
+        </script>
+        <style>
+            .bottomLeft
+            {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                z-index: 1;
+            }
+
+        </style>
+    </head>
+
+    <body onload='loadMapScenario();'>
+
+        <div>
+            <a href="#" class="bottomLeft"><img src="Logo.png"></a>
+            <input type="text" placeholder="Username" name="username" style='font-size: xx-large; position: fixed; top: 35%; left: 50%; overflow: hidden; z-index: 2;'>
+            <input type="text" placeholder="Password" name="password" style='font-size: xx-large; position: fixed; top: 40%; left: 50%; overflow: hidden; z-index: 2;'>
+            <img src="Base SVG Assets/Main Window.svg" style='position: fixed; left: 25%; top: auto; height: auto; width: 60%; z-index: 1;'>
+            <header style='position: fixed; z-index: 2; top: auto; left: 27%; font-size: 600%;'>Log In</header>
+
+            <input type="image" alt="Submit" src="Base SVG Assets/[BTN]Sign In.svg" style='position:fixed; height: auto; width: 17%; z-index: 1; top: 45% ;left: 49.2%;'>
+        </div>
+        <div id='printoutPanel'></div> 
+
+        <div id='myMap' style='top: 0; width: 100vw; height: 100vw; z-index: 0;'></div>
+      
+
+    </body>
+</html>
+

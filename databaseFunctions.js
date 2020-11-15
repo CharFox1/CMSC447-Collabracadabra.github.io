@@ -5,11 +5,24 @@ const { time } = require("console");
 const tables = ["Users", "Employee", "PIN", "Teams", "Events", "Missions"]
 
 exports.listDatabases = async function listDatabases(client) {
-    databasesList = await client.db().admin().listDatabases();
+    DatabasesList = await client.db().admin().listDatabases();
 
-    console.log("Databases:");
-    databasesList.databases.forEach(db => console.log(` - ${db.name}`));
+    console.log("Tables:");
+    DatabasesList.databases.forEach(db => console.log(` - ${db.name}`));
 }
+
+exports.cleanDatabase = async function cleanDatabase(client) {
+
+    console.log("[cleanDatabase] removing tables");
+    tablesList = await client.db("AFRMS").listCollections().toArray();
+    console.log(tablesList);
+    for (const table of tablesList) {
+        await client.db("AFRMS").dropCollection(table.name);
+    }
+
+    console.log("[cleanDatabase] tables removed");
+}
+
 
 // check if each table exists and add it if not
 // don't need to do this.  Mongo automatically creates collections as needed
@@ -18,6 +31,7 @@ exports.addUser = async function addUser(client, username, pass, name, role) {
 
     if (username == null | pass == null) {
         console.log("[addUser] name or password cannot be null!");
+        return;
     }
 
     console.log("[addUser] Checking if User already exists");
@@ -112,20 +126,16 @@ exports.addEmployee = async function addEmployee(client, username, pass, name, r
     var exists = await client.db("AFRMS").collection("Users").findOne(query);
     if (exists == null) {
         console.log("[addEmployee] User does not exist yet. adding it");
-        var collection = client.db("AFRMS").collection("Users");
-        var doc = {
-            username: username,
-            password: pass,
-            name: name,
-            role: role
-        };
-    await collection.insertOne(doc);
+
+        var result = await exports.addUser(client, username, pass, name, role);
+        if (result == null) {
+            console.log("[addEmployee] failed to add user");
+            return;
+        }
     }
 
     const user = await client.db("AFRMS").collection("Users").findOne(query);
-    console.log(user);
     var userID = user._id;
-    console.log(userID);
 
     var collection = client.db("AFRMS").collection("Employee");
     var doc = {
@@ -187,16 +197,14 @@ exports.addPIN = async function addPIN(client, doc) {
     exists = await client.db("AFRMS").collection("Users").findOne(query);
     if (exists == null) {
         console.log("[addPIN] User does not exist yet. adding it");
-        var collection = client.db("AFRMS").collection("Users");
-        var userDoc = {
-            username: username,
-            password: password,
-            name: name,
-            role: role
-        };
+        var result = await exports.addUser(client, username, password, name, role);
+        if (result == null) {
+            console.log("[addEmployee] failed to add user");
+            return;
+        }
     } 
 
-    var userID = await client.db("AFRMS").collection("Users").insertOne(userDoc).insertedId;
+    var userID = result._id;
     doc.userID = userID;
 
     console.log("[addPIN] adding PIN to database");

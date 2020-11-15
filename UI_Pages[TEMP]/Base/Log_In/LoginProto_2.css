@@ -1,0 +1,264 @@
+:root {
+	--web-view-ids: Background,Window_Layer;
+	--web-view-name: Background;
+	--web-view-id: Background;
+	--web-scale-to-fit: false;
+	--web-scale-to-fit-type: default;
+	--web-enable-scale-up: false;
+	--web-scale-on-resize: true;
+	--web-show-scale-controls: false;
+	--web-scale-on-double-click: false;
+	--web-center-horizontally: false;
+	--web-center-vertically: false;
+	--web-actual-size-on-double-click: false;
+	--web-navigate-on-keypress: false;
+	--web-refresh-for-changes: false;
+	--web-add-image-compare: false;
+	--web-show-by-media-query: false;
+	--web-application: true;
+	--web-show-navigation-controls: false;
+	--web-enable-deep-linking: true;
+	--web-is-overlay: false;
+}
+#Background,
+#Window_Layer {
+	display: none;
+}
+@media (min-width: 0px) {
+	.mediaViewInfo {
+		--web-view-name: Background;
+		--web-view-id: Background;
+		--web-scale-on-resize: true;
+		--web-application: true;
+		--web-enable-deep-linking: true;
+	}
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		border: none;
+	}
+	#Background {
+		position: absolute;
+		display: block;
+		width: 2160px;
+		height: 1440px;
+		background: linear-gradient(146.6deg, rgba(66,129,188,1) 0%, rgba(177,52,248,1) 28.13%, rgba(180,200,48,1) 54.41%, rgba(169,30,30,1) 75.29%, rgba(30,162,39,1) 100%);
+		overflow: hidden;
+		--web-view-name: Background;
+		--web-view-id: Background;
+		--web-scale-on-resize: true;
+		--web-application: true;
+		--web-enable-deep-linking: true;
+	}
+}
+@media (min-width: 0px) {
+	.mediaViewInfo {
+		--web-view-name: Window Layer;
+		--web-view-id: Window_Layer;
+		--web-scale-on-resize: true;
+		--web-application: true;
+		--web-enable-deep-linking: true;
+	}
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		border: none;
+	}
+	#Window_Layer {
+		position: absolute;
+		display: block;
+		width: 1920px;
+		height: 1080px;
+		background-color: rgba(11,11,11,0.259);
+		overflow: hidden;
+		--web-view-name: Window Layer;
+		--web-view-id: Window_Layer;
+		--web-scale-on-resize: true;
+		--web-application: true;
+		--web-enable-deep-linking: true;
+	}
+	#Logo {
+		position: absolute;
+		width: 374px;
+		height: 374px;
+		left: -11px;
+		top: 810px;
+		overflow: visible;
+	}
+	#Window {
+		mix-blend-mode: normal;
+		position: absolute;
+		width: 1230.5px;
+		height: 1030.5px;
+		left: 344.75px;
+		top: 24.989px;
+		overflow: visible;
+	}
+	#Rectangle_65 {
+		fill: rgba(255,255,255,1);
+	}
+	.Rectangle_65 {
+		filter: drop-shadow(0px 0px 0px rgba(0, 0, 0, 1));
+		position: absolute;
+		overflow: visible;
+		width: 1230.5px;
+		height: 1030.5px;
+		left: 0px;
+		top: 0px;
+	}
+	#Login {
+		position: absolute;
+		width: 802.375px;
+		height: 593.888px;
+		left: 382.625px;
+		top: 44.424px;
+		overflow: visible;
+	}
+	#Rectangle_68 {
+		fill: rgba(255,255,255,1);
+		stroke: rgba(0,0,0,1);
+		stroke-width: 2.2941572666168213px;
+		stroke-linejoin: miter;
+		stroke-linecap: butt;
+		stroke-miterlimit: 10;
+		shape-rendering: auto;
+	}
+	.Rectangle_68 {
+		position: absolute;
+		overflow: visible;
+		width: 452.294px;
+		height: 74.294px;
+		left: 352.375px;
+		top: 329.076px;
+	}
+	#Rectangle_69 {
+		fill: rgba(255,255,255,1);
+		stroke: rgba(0,0,0,1);
+		stroke-width: 2.2941572666168213px;
+		stroke-linejoin: miter;
+		stroke-linecap: butt;
+		stroke-miterlimit: 10;
+		shape-rendering: auto;
+	}
+	.Rectangle_69 {
+		position: absolute;
+		overflow: visible;
+		width: 452.294px;
+		height: 74.294px;
+		left: 352.375px;
+		top: 411.576px;
+	}
+	#BTNSign_In {
+		position: absolute;
+		width: 443.325px;
+		height: 54.625px;
+		left: 355.375px;
+		top: 539.263px;
+		overflow: visible;
+	}
+	#Rectangle_70 {
+		fill: rgba(0,157,241,1);
+	}
+	.Rectangle_70 {
+		filter: drop-shadow(0px 0px 5.754px rgba(0, 0, 0, 0.502));
+		position: absolute;
+		overflow: visible;
+		width: 460.587px;
+		height: 71.887px;
+		left: 0px;
+		top: 0px;
+	}
+	#SIGN_IN {
+		filter: drop-shadow(4.025px 4.025px 15px rgba(0, 0, 0, 0.749));
+		left: 163.663px;
+		top: 13.428px;
+		position: absolute;
+		overflow: visible;
+		width: 117px;
+		white-space: nowrap;
+		line-height: 44.15999221801758px;
+		margin-top: -3.6800003051757812px;
+		text-align: center;
+		font-family: MyriadPro-Regular;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 36.799991607666016px;
+		color: rgba(242,242,242,1);
+	}
+	#Username {
+		left: 439.563px;
+		top: 339.21px;
+		position: absolute;
+		overflow: visible;
+		width: 276.625px;
+		height: 89.25px;
+		line-height: 67.20000457763672px;
+		margin-top: -5.600002288818359px;
+		text-align: center;
+		font-family: MyriadPro-Regular;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 56px;
+		color: rgba(102,102,102,1);
+	}
+	#Password {
+		left: 439.563px;
+		top: 421.71px;
+		position: absolute;
+		overflow: visible;
+		width: 276.625px;
+		height: 89.25px;
+		line-height: 67.20000457763672px;
+		margin-top: -5.600002288818359px;
+		text-align: center;
+		font-family: MyriadPro-Regular;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 56px;
+		color: rgba(102,102,102,1);
+	}
+	#Log_In {
+		position: absolute;
+		width: 758.313px;
+		height: 138.75px;
+		left: 0px;
+		top: 0px;
+		overflow: visible;
+	}
+	#Log_In_x {
+		left: 0px;
+		top: 0px;
+		position: absolute;
+		overflow: visible;
+		width: 226px;
+		height: 138.75px;
+		line-height: 96px;
+		margin-top: -8px;
+		text-align: center;
+		font-family: MyriadPro-Regular;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 80px;
+		color: rgba(0,0,0,1);
+	}
+	#Line_1 {
+		fill: transparent;
+		stroke: rgba(0,0,0,1);
+		stroke-width: 4.857861518859863px;
+		stroke-linejoin: miter;
+		stroke-linecap: butt;
+		stroke-miterlimit: 10;
+		shape-rendering: auto;
+	}
+	.Line_1 {
+		overflow: visible;
+		position: absolute;
+		width: 750px;
+		height: 4.858px;
+		left: 8.313px;
+		top: 80.076px;
+		transform: matrix(1,0,0,1,0,0);
+	}
+}

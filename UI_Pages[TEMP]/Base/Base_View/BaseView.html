@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Alakazambulance - AFRMS</title>
+        <style type='text/css'>body{margin:0;padding:0;overflow:hidden;font-family:'Segoe UI',Helvetica,Arial,Sans-Serif}</style>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+        <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=Akk01vko6U7AknIQbuqPOOwSg2jiZwTKoqvkDKtrIB6i-An4f2J-n4-LKCFILYOD'></script>
+        <script type='text/javascript'>
+                var map;
+                function loadMapScenario() 
+                {
+                    map = new Microsoft.Maps.Map(document.getElementById('myMap'), {});
+                }
+        </script>
+        <style>
+            .bottomRight
+            {
+                position: fixed;
+                bottom: 1.125%;
+                right: 0;
+                z-index: 1;
+            }
+
+        </style>
+    </head>
+
+    <body onload='loadMapScenario();'>
+
+        <div>
+            <a href="#" class="bottomRight"><img src="Logo.png"></a>
+            <img src="Base SVG Assets/Side Window.svg" style='position: fixed; left: 3.125%; top: 6.25%; height: auto; width: 23%; z-index: 1;'>
+
+            <input type="image" alt="Submit" src="Base SVG Assets/[BTN]Make Event.svg" style='position:fixed; height: auto; width: 19%; z-index: 1; top: 10% ;left: 4.75%;'>
+            <input type="image" alt="Submit" src="Base SVG Assets/[BTN]Check Event.svg" style='position:fixed; height: auto; width: 19%; z-index: 1; top: 17% ;left: 4.75%;'>
+        </div>
+        <div style = 'width: 19%; font-size: 250%; top: 25%; left: 4.75%; z-index: 1; position: fixed; text-align: center;'>Need help? Call 'Your Mom' or press the 'I Need Help' button to tell us about your situation and how we can help you. If you've already contacted us you can press the 'Check Event Status' button to see if help is on the way.</div>
+        <div id='printoutPanel'></div> 
+
+        <div id='myMap' style='top: 0; width: 100vw; height: 100vw; z-index: 0;'></div>
+      
+
+    </body>
+</html>
+
