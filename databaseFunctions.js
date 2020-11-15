@@ -59,11 +59,14 @@ exports.addUser = async function addUser(client, username, pass, name, role) {
 exports.getUser = async function getUser(client, userID) {
 
     var fixID = ObjectID(userID);
-    console.log("[getUser] finding team");
-    var exists = await client.db("AFRMS").collection("Users").findOne({_id: fixID});
-    if (exists == null) {
-        console.log("[getUser] there is no team with this id!");
+    console.log("[getUser] finding User");
+//    var exists = await client.db("AFRMS").collection("Users").findOne({_id: userID});
+//    if (exists == null) {
+        exists = await client.db("AFRMS").collection("Users").findOne({ _id: fixID });
+        if (exists == null) {
+            console.log("[getUser] there is no team with this id!");
         return;
+//        }
     }
     return(exists);
 }

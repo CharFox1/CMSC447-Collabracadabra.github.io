@@ -17,6 +17,8 @@ function main() {
 
         app.get('/', function (req, res) { res.render('pages/signinPage'); });
         app.get('/createUser', function (req, res) { res.render('pages/createUser'); });
+        app.get('/submitEvent', function (req, res) { res.render('pages/submitEvent', submitEvent(client, req, res)); });
+
         app.use(bodyParser.urlencoded({ extended: true }));
         var userID = signIn(client);
 
@@ -26,7 +28,6 @@ function main() {
 
 function signIn(client) {
     console.log("In sign in function");
-    app.get('/submitEvent', function (req, res) { res.render('pages/submitEvent', submitEvent(client, req, res)); });
     app.post('/Userlogin', async (req, res) => {
         var username = req.body.username;
         var pass = req.body.password;
@@ -81,9 +82,10 @@ function signIn(client) {
         res.redirect('/createUser');
         var username = req.body.username;
         var pass = req.body.password;
+        var name = req.body.name;
 
         var dataFunc = require("./databaseFunctions");
-        var userID = await dataFunc.addUser(client, username, pass, "PIN");
+        var userID = await dataFunc.addUser(client, username, pass, name ,"PIN");
 
         if (userID == null) {
             console.log("Username unavailable");
