@@ -11,7 +11,6 @@ function main() {
     MongoClient.connect('mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/<dbname>?retryWrites=true&w=majority', (err, client) => {
         console.log('Connected to the server');
         if (err) return console.log(err);
- //       var db = client.db('AFRMS');
         var client = client;
         app.listen(3000, () => { console.log('listening on 3000') });
 
