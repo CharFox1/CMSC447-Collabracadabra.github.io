@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>AFRMS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <%- include('../../Partials/head'); %>
+    </head>
+    <body class="container">
+
+
+        <header>
+        <%- include('../../Partials/FRheader'); %>
+        </header>
+
+
+        <main>
+            <div class="jumbotron">
+            <h1>Current Mission:</h1>
+                    <strong>Status: <%= status %></strong>
+                <% missionEvents.forEach(function(event) { %>
+                    <p>Name: <%= event.name %> </p>
+                    <p>Location: <%= event.location %> </p>
+                    <p>Description: <%= event.description %> </p>
+                    <p>Severity: <%= event.severity %> </p>
+                    <p>Time: <%= event.timestamp %> </p>
+                    <% }); %>
+            <h3>Team Info:</h3>           
+                    <strong>Team Name: <%= teamname %></strong>
+                    <p>Team Type: <%= teamtype %> </p>
+                    <p>Team Status: <%= availability  %> </p>
+                    <% members.forEach(function(member) { %> 
+                        <p>Name: <%= member.name %> </p>
+                        <p>Role: <%= member.role %> </p>
+                        <p>Status: <%= member.availability %> </p>
+                     <% }); %>
+                    <p>Time: <%= event.timestamp %> </p>
+
+            </div>
+        </main>
+
+        <footer>
+        <%- include('../../Partials/footer'); %>
+        </footer> 
+    </body>
+</html>

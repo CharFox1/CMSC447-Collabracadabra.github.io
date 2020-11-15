@@ -17,7 +17,6 @@ function main() {
 
         app.get('/', function (req, res) { res.render('pages/signinPage'); });
         app.get('/createUser', function (req, res) { res.render('pages/createUser'); });
-
         app.use(bodyParser.urlencoded({ extended: true }));
         var userID = signIn(client);
 
@@ -27,6 +26,7 @@ function main() {
 
 function signIn(client) {
     console.log("In sign in function");
+    app.get('/submitEvent', function (req, res) { res.render('pages/submitEvent', submitEvent(client, req, res)); });
     app.post('/Userlogin', async (req, res) => {
         var username = req.body.username;
         var pass = req.body.password;
@@ -74,15 +74,13 @@ function signIn(client) {
 
             }
         }
-        res.end();
     });
 
     app.post('/createUser', async (req, res) => {
-        var username = req.body.username;
-        var pass = req.body.password;
-
         app.get('/createUser', (req, res) => { res.sendFile(__dirname + '/views/createUser.html') });
         res.redirect('/createUser');
+        var username = req.body.username;
+        var pass = req.body.password;
 
         var dataFunc = require("./databaseFunctions");
         var userID = await dataFunc.addUser(client, username, pass, "PIN");
@@ -104,7 +102,48 @@ function signIn(client) {
             console.log("User created successfully");
             return userID;
         }
-        res.end();
+    });
+}
+
+
+function submitEvent(client, req, res) {
+    app.post('/SubmitEvent', async (req, res) => {
+        var name = req.body.name;
+        var email = req.body.email;
+        var number = req.body.number;
+        var location = req.body.location;
+        var desc = req.body.description;
+        var time = new Date();
+
+        var dataFunc = require("./databaseFunctions");
+
+        if (name != null & location != null & desc != null) {
+            var eventID = await dataFunc.addEvent(client, {
+                Name: name,
+                Number: number,
+                Email: email,
+                timestamp: time,
+                Location: location,
+                Description: desc,
+                severity: null,
+                mission: null,
+                Employee: null
+            });
+
+            if (eventID != null) {
+                console.log("Created a new event");
+                return eventID;
+            }
+            else {
+                console.log("Failed to create a new event");
+                return null;
+            }
+        }
+        else {
+            console.log("Please insert a name, location, and description for the event.");
+            return null;
+        }
+
     });
 }
 
@@ -372,11 +411,36 @@ function approveEvent(client, user, req, res) {
 }
 
 function frMenu(client, user, req, res) {
-
+    app.get('/home/disp', async function (req, res) {
+        //First find out what team they belong too.
+        await client.db("AFRMS").collection("Teams").find().toArray(function (err, teams) {
+            //With all of the teams selected I need to query through each members array to find one with this user inside of it.
+            
+        });
+    });
+    res.redirect('/home/disp');
 }
 
 function adminMenu(client, user, req, res) {
+    app.get('/home/admin', async function (req, res) {
+        await client.db("AFRMS").collection("Users").find().toArray(function (err, users) {
 
+            res.render('pages/adminMenu/adminMenu', {
+                users: users
+            }, changeRole(client, user, req, res));
+        });
+    });
+    res.redirect('/home/admin');
+}
+
+function changeRole(client, user, req, res) {
+    app.post('/ChangeRole', async (req, res) => {
+        var userID = req.body.UserID;
+        var dataFunc = require("./databaseFunctions");
+        //var user = await dataFunc.getUser(client, userID);
+        var role = req.body.role;
+        await dataFunc.updateRole(client, userID, role);
+    });
 }
 
 main();

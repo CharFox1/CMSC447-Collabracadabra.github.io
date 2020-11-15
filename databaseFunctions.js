@@ -58,8 +58,9 @@ exports.addUser = async function addUser(client, username, pass, name, role) {
 
 exports.getUser = async function getUser(client, userID) {
 
+    var fixID = ObjectID(userID);
     console.log("[getUser] finding team");
-    var exists = await client.db("AFRMS").collection("Users").findOne({_id: userID});
+    var exists = await client.db("AFRMS").collection("Users").findOne({_id: fixID});
     if (exists == null) {
         console.log("[getUser] there is no team with this id!");
         return;
@@ -70,7 +71,8 @@ exports.getUser = async function getUser(client, userID) {
 exports.updateRole = async function updateRole(client, id, role) {
 
     console.log("[updateRole] Checking if User already exists");
-    const query = {_id: id};
+    var fixID = ObjectID(id);
+    const query = {_id: fixID};
     var collection = client.db("AFRMS").collection("Users");
     var exists = await collection.findOne(query);
     if (exists == null) {
@@ -228,10 +230,10 @@ exports.addEvent = async function addEvent(client, doc) {
     var PIN = doc.PIN;
     var Employee = doc.Employee;
 
-    if (PIN == null & Employee == null) {
-        console.log("[addEvent] PIN or Employee ID missing!");
-        return;
-    }
+    //if (PIN == null & Employee == null) {
+    //    console.log("[addEvent] PIN or Employee ID missing!");
+    //    return;
+    //}
 
     var collection = client.db("AFRMS").collection("Events");
     var result = await collection.insertOne(doc);
