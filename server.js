@@ -77,7 +77,7 @@ function signIn(client) {
     });
 
     app.post('/createUser', async (req, res) => {
-        app.get('/createUser', (req, res) => { res.sendFile(__dirname + '/views/createUser.html') });
+        app.get('/createUser', (req, res) => { res.sendFile(__dirname + '/views/createUser.ejs') });
         res.redirect('/createUser');
         var username = req.body.username;
         var pass = req.body.password;
@@ -92,7 +92,7 @@ function signIn(client) {
         }
         else {
             console.log("Successfully created a new user");
-            signIn(client);
+            res.redirect("/");
         }
 
         if (userID == null) {
