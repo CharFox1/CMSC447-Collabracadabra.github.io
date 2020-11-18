@@ -412,14 +412,39 @@ function approveEvent(client, user, req, res) {
 }
 
 function frMenu(client, user, req, res) {
-    app.get('/home/disp', async function (req, res) {
+    app.get('/home/fr', async function (req, res) {
         //First find out what team they belong too.
-        await client.db("AFRMS").collection("Teams").find().toArray(function (err, teams) {
-            //With all of the teams selected I need to query through each members array to find one with this user inside of it.
-            
+        var dataFunc = require("./databaseFunctions");
+        var team = await dataFunc.getTeam(client, user._id);
+        var mission = await dataFunc.getMission(client, team._id);
+
+        res.render('pages/frMenu/frMenu', {
+            team: team,
+            mission: mission
+        });
+
+    });
+    app.get('/home/fr/updateMission', async function (req, res) {
+        var dataFunc = require("./databaseFunctions");
+        var mission = await dataFunc.getMission(client, team._id);
+
+            res.render('pages/frMenu/updateMission', {
+                
+            }, approveEvent(client, user, req, res));
         });
     });
-    res.redirect('/home/disp');
+    res.redirect('/home/fr');
+} 
+
+function updateMission(client, user, team, mission, req, res) {
+    app.post('/UpdateMission', async (req, res) => {
+        var status = req.body.status;
+
+        mission.status = status;
+        team.status = status;
+        await dataFunc.updateMission(client, mission);
+        await dataFunc.updateTeam(client, team)
+    });
 }
 
 function adminMenu(client, user, req, res) {
