@@ -412,6 +412,7 @@ function approveEvent(client, user, req, res) {
 }
 
 function frMenu(client, user, req, res) {
+    /*
     app.get('/home/fr', async function (req, res) {
         //First find out what team they belong too.
         var dataFunc = require("./databaseFunctions");
@@ -434,6 +435,7 @@ function frMenu(client, user, req, res) {
         });
     });
     res.redirect('/home/fr');
+    */
 } 
 
 function updateMission(client, user, team, mission, req, res) {
@@ -466,6 +468,14 @@ function changeRole(client, user, req, res) {
         //var user = await dataFunc.getUser(client, userID);
         var role = req.body.role;
         await dataFunc.updateRole(client, userID, role);
+        if (role != "PIN") {
+            var user = await dataFunc.getUser(client, userID);
+            var employee = await dataFunc.addEmployee(client, user.username, user.password, user.name, role, "available")
+            if (employee == null) {
+                console.log("Employee already exists, updating employee info");
+                await dataFunc.updateEmployee(client, userID, user.username, user.password, user.name, role, user.availability);
+            }
+        }
     });
 }
 
