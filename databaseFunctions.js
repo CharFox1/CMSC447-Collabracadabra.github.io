@@ -97,7 +97,7 @@ exports.updateEmployee = async function updateEmployee(client, id, username, pas
         role: role
     };
     result = await collection.updateOne( {_id: id}, 
-            {$set: {"_id": id, "username": username, "password":pass, "name": name, "role":role}});
+            {$set: {"_id": id, "username": username, "password":pass, "name": name, "role":role}}, {upsert: true});
     console.log("[updateEmployee]:")
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
