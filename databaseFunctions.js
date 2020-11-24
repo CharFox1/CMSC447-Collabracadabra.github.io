@@ -89,15 +89,29 @@ exports.updateRole = async function updateRole(client, id, role) {
 
 exports.updateEmployee = async function updateEmployee(client, id, username, pass, name, role, availability) {
 
+    // check if employee has a corresponding user
+    result = await client.db("AFRMS").collection("Users").findOne({username: username, password: pass});
+    if (result == null) {
+        console.log("[updateEmployee] User does not exist! Adding it");
+        result = await exports.addUser(client, username, pass, name, role);
+    } else {
+        result = result._id;
+    }
+    // now result should be the userID
+    var userID = result;
+
+
     var collection = client.db("AFRMS").collection("Employee");
     var doc = {
+        userID: userID,
         username: username,
         password: pass,
         name: name,
-        role: role
+        role: role,
+        availability: availability
     };
     result = await collection.updateOne( {_id: id}, 
-            {$set: {"_id": id, "username": username, "password":pass, "name": name, "role":role}}, {upsert: true});
+            {$set: doc}, {upsert: true});
     console.log("[updateEmployee]:")
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
@@ -246,11 +260,23 @@ exports.addEvent = async function addEvent(client, doc) {
 
 exports.updateEvent = async function updateEvent(client, event) {
 
+    console.log("[updateEvent] updating Events in Events collection")
     result = await client.db("AFRMS").collection("Events").updateOne({ _id: event._id }, 
         {$set: event});
     console.log("[updateEvent]:")
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
+
+    console.log("[updateEvent] updating Events in Missions collection")
+    // search array of events in mission for events with the same id
+    var query = {events: {$elemMatch: {_id: event._id}}};
+    var test = await client.db("AFRMS").collection("Missions").find(query).toArray();
+    console.log(test)
+    result = await client.db("AFRMS").collection("Missions").updateMany(query, {$set: {"events.$": event}});
+    console.log("[updateEvent]:")
+    console.log(`${result.matchedCount} document(s) matched the query criteria.`);
+    console.log(`${result.modifiedCount} document(s) was/were updated.`);
+
 }
 
 // add team
