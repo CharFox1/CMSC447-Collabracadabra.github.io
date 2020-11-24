@@ -18,7 +18,7 @@ async function main() {
         console.log("\n[[dbTest]] listing databases");
         await db.listDatabases(client);
 
-        console.log("\n[dbTest] cleaning database");
+        console.log("\n[[dbTest]] cleaning database");
         await db.cleanDatabase(client);
 
 
@@ -42,7 +42,7 @@ async function main() {
 
         var userID = await db.findUser(client, "test3", "test2");
         console.log("\n[[dbTest]] UserID to be used in updateEmployee test:", userID);
-        await db.updateEmployee(client, userID, "test3", "test2", "some role", false);
+        await db.updateEmployee(client, userID, "test3", "test2", "update", "some role", false);
 
         var event = {
             PIN: 123,
@@ -53,7 +53,9 @@ async function main() {
             severity: 5,
             mission: null
         };
-        await db.addEvent(client, event)
+        var eventID = await db.addEvent(client, event)
+        event._id = eventID;
+        //event.location = "NEW";
 
         // returns list of employee docs 
         var employees = await db.getAllEmployees(client); 
@@ -73,6 +75,9 @@ async function main() {
             status: "Urgent"
         }
         var mission = await db.addMission(client, mission);
+
+        event.location = "NEW";
+        await db.updateEvent(client, event);
 
     } catch (e) {
         console.error(e);
