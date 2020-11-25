@@ -32,6 +32,7 @@ async function main() {
         await db.addEmployee(client, "test2", "test2", "Harold", "Operations Chief", true);
         await db.addEmployee(client, "test3", "test2", "Barold", "Operations Chief", true);
 
+        console.log("\n[[dbTest]] adding PIN")
         await db.addPIN(client, {
             username: "test4",
             password: "test4",
@@ -51,7 +52,6 @@ async function main() {
             location: "my house",
             description: "not enough pizza",
             severity: 5,
-            mission: null
         };
         var eventID = await db.addEvent(client, event)
         event._id = eventID;
@@ -69,7 +69,7 @@ async function main() {
 
         var mission = {
             teamName: team.name,
-            teamID: teamID,
+            team: team,
             author: employees[0],
             events: [event],
             status: "Urgent"

@@ -177,20 +177,23 @@ exports.updateEmployee = async function updateEmployee(client, id, username, pas
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
 
-    doc._id = result.insertedId();
+    doc._id = result.insertedId;
 
     // find which teams need to be updated
     var team = await exports.findTeamFromEmployee(client, doc);
-    var members = team.members;
-    for (var i of members) {
-        if (i._id == doc._id) {
-            // update the employee doc in the team
-            i = doc;
+    if (team != null) {
+        console.log("[updateEmployee] updating Employee in Team")
+        var members = team.members;
+        for (var i of members) {
+            if (i._id == doc._id) {
+                // update the employee doc in the team
+                i = doc;
+            }
         }
+        team.members = members;
+        // update them in team and mission collection
+        await updateTeam(client, team);
     }
-    team.members = members;
-    // update them in team and mission collection
-    await updateTeam(client, team);
 }
 
 exports.getAllEmployees = async function getAllEmployees(client) {
@@ -227,13 +230,16 @@ exports.addPIN = async function addPIN(client, doc) {
         console.log("[addPIN] User does not exist yet. adding it");
         var result = await exports.addUser(client, username, password, name, role);
         if (result == null) {
-            console.log("[addEmployee] failed to add user");
+            console.log("[addPIN] failed to add user");
             return;
+        } else {
+            doc.userID = result;
         }
-    } 
+    } else {
+        doc.userID = exists._id;
+    }
 
-    var userID = result._id;
-    doc.userID = userID;
+
 
     console.log("[addPIN] adding PIN to database");
     var collection = client.db("AFRMS").collection("Person in Need");
