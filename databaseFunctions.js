@@ -87,36 +87,6 @@ exports.updateRole = async function updateRole(client, id, role) {
 
 }
 
-exports.updateEmployee = async function updateEmployee(client, id, username, pass, name, role, availability) {
-
-    // check if employee has a corresponding user
-    result = await client.db("AFRMS").collection("Users").findOne({username: username, password: pass});
-    if (result == null) {
-        console.log("[updateEmployee] User does not exist! Adding it");
-        result = await exports.addUser(client, username, pass, name, role);
-    } else {
-        result = result._id;
-    }
-    // now result should be the userID
-    var userID = result;
-
-
-    var collection = client.db("AFRMS").collection("Employee");
-    var doc = {
-        userID: userID,
-        username: username,
-        password: pass,
-        name: name,
-        role: role,
-        availability: availability
-    };
-    result = await collection.updateOne( {_id: id}, 
-            {$set: doc}, {upsert: true});
-    console.log("[updateEmployee]:")
-    console.log(`${result.matchedCount} document(s) matched the query criteria.`);
-    console.log(`${result.modifiedCount} document(s) was/were updated.`);
-}
-
 exports.findUser = async function findUser(client, username, pass) {
 
     console.log("[findUser] Checking if employee exists");
@@ -178,16 +148,49 @@ exports.getEmployee = async function getEmployee(client, id) {
     return(result);
 }
 
-exports.getEvent = async function getEvent(client, id) {
+exports.updateEmployee = async function updateEmployee(client, id, username, pass, name, role, availability) {
 
-    var fixID = ObjectID(id);
-    const query = { _id: fixID }
-    var result = await client.db("AFRMS").collection("Events").findOne(query);
+    // check if employee has a corresponding user
+    result = await exports.findUser(client, username, pass);
     if (result == null) {
-        console.log("result is null");
-        console.log(id);
+        console.log("[updateEmployee] User does not exist! Adding it");
+        result = await exports.addUser(client, username, pass, name, role);
+    } else {
+        result = result._id;
     }
-    return (result);
+    // now result should be the userID
+    var userID = result;
+
+
+    var collection = client.db("AFRMS").collection("Employee");
+    var doc = {
+        userID: userID,
+        username: username,
+        password: pass,
+        name: name,
+        role: role,
+        availability: availability
+    };
+    result = await collection.updateOne( {_id: id}, 
+            {$set: doc}, {upsert: true});
+    console.log("[updateEmployee] updating Employee in Employee collection")
+    console.log(`${result.matchedCount} document(s) matched the query criteria.`);
+    console.log(`${result.modifiedCount} document(s) was/were updated.`);
+
+    doc._id = result.insertedId();
+
+    // find which teams need to be updated
+    var team = await exports.findTeamFromEmployee(client, doc);
+    var members = team.members;
+    for (var i of members) {
+        if (i._id == doc._id) {
+            // update the employee doc in the team
+            i = doc;
+        }
+    }
+    team.members = members;
+    // update them in team and mission collection
+    await updateTeam(client, team);
 }
 
 exports.getAllEmployees = async function getAllEmployees(client) {
@@ -279,6 +282,18 @@ exports.updateEvent = async function updateEvent(client, event) {
 
 }
 
+exports.getEvent = async function getEvent(client, id) {
+
+    var fixID = ObjectID(id);
+    const query = { _id: fixID }
+    var result = await client.db("AFRMS").collection("Events").findOne(query);
+    if (result == null) {
+        console.log("result is null");
+        console.log(id);
+    }
+    return (result);
+}
+
 // add team
 // team doc should be of the format {createdBy: employee, members: [employee(s)]}
 exports.addTeam = async function addTeam(client, team) {
@@ -287,6 +302,24 @@ exports.addTeam = async function addTeam(client, team) {
     result = await client.db("AFRMS").collection("Teams").insertOne(team);
     console.log("[addTeam] team added!");
     return(result.insertedId);
+
+}
+
+exports.updateTeam = async function updateTeam(client, team) {
+
+    console.log("[updateTeam] updating Team in the Teams collection");
+    result = await client.db("AFRMS").collection("Events").updateOne({ _id: team._id }, 
+        {$set: team});
+    console.log("[updateEvent]:")
+    console.log(`${result.matchedCount} document(s) matched the query criteria.`);
+    console.log(`${result.modifiedCount} document(s) was/were updated.`);
+
+    // update team in missions
+    var query = {"team._id": team};
+    result = await client.db("AFRMS").collection("Missions").updateMany(query, {$set: {team: team}});
+    console.log("[updateTeam]:")
+    console.log(`${result.matchedCount} document(s) matched the query criteria.`);
+    console.log(`${result.modifiedCount} document(s) was/were updated.`);
 
 }
 
