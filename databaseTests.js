@@ -61,7 +61,7 @@ async function main() {
         var employees = await db.getAllEmployees(client); 
         var team = {
             name: "cool team",
-            createdBy: employees[0],
+            author: employees[0],
             members: employees,
             availability: true
         }

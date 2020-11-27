@@ -363,7 +363,7 @@ exports.findTeamFromEmployee = async function findTeamFromEmployee(client, emplo
 
     console.log("[findTeamFromEmployee] finding Team");
 
-    var query = {members: {$eq: employeeID}};
+    var query = {members: {$eq: {_id: employeeID}}};
     var exists = await client.db("AFRMS").collection("Teams").findOne(query);
     if (exists == null) {
         console.log("[findTeamFromEmployee] Employee not found on any Team!");
@@ -371,6 +371,30 @@ exports.findTeamFromEmployee = async function findTeamFromEmployee(client, emplo
     }
     return exists;
 }
+
+exports.notOnTeam = async function notOnTeam(client) {
+
+    console.log("[notOnTeam] finding employees not on any team");
+
+    var teams = await client.db("AFRMS").collection("Teams").find().toArray();
+    var employeesInTeams = [];
+
+    for (var team of teams) {
+        members = team.members();
+        for (var member of members) {
+            employeesInTeams.push(member);
+        }
+    }
+
+    var allEmployees = await exports.getAllEmployees(client);
+
+    for (member of employeesInTeams) {
+        if (allEmployees.includes(member)) {
+            // remove stuff
+        }
+    }
+
+} 
 
 // add mission
 // mission doc should be of the format {team: team, author: employee, events: [event(s)], status: int}
