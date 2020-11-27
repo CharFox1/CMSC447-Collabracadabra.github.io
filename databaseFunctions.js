@@ -172,8 +172,8 @@ exports.addEmployee = async function addEmployee(client, username, pass, name, r
 }
 
 exports.getEmployee = async function getEmployee(client, id) {
-    
-    const query = { _id: id }
+    var fixID = ObjectID(id);
+    const query = { _id: fixID }
     var result = await client.db("AFRMS").collection("Employee").findOne(query);
     return(result);
 }

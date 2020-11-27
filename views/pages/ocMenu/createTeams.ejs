@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>AFRMS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <%- include('../../Partials/head'); %>
+    </head>
+    <body class="container">
+
+
+        <header>
+        <%- include('../../Partials/OCheader'); %>
+        </header>
+
+
+        <main>
+            <div class = "row">
+                <div class = "col-sm-8">
+                    <div class="jumbotron">
+                    <form action="/createTeam" method="POST"> 
+                        <h1>Create New Team</h1>
+                        <p>Team Name: <input type="text" name="teamname"></p>
+                        <p>Team Availability: <input type="text" name="availability"></p>
+                         <ul id ="frIDs" name ="frs" > 
+                         </ul>
+                        
+           
+                        <p><button type="submit" name="submitTeam">Submit Team</button></p>
+                    </form>
+                    </div>
+                </div>
+            <div class="col-sm-4">
+                <div class="well">
+                     <h1>Available First Responders</h1>
+                        <ul>
+                        <% frs.forEach(function(fr) { %>              
+                            <strong>Name: <%= fr.name %></strong>
+                            <p>Role: <%= fr.role %>
+                            <p>availability: <%= fr.availability %> </p>
+                            <form action="/AddFR" method="POST">
+                            <input type ="hidden" name="frID" id="id" value="<%=fr._id%>">
+                            <button type="submit">Add First Responder</button>
+                            </form>
+                    <% }); %>
+              </div>
+            </div>
+        </main>
+        <footer>
+        <%- include('../../Partials/footer'); %>
+        </footer> 
+        
+    </body>
+</html>

@@ -273,6 +273,18 @@ function ocMenu(client, user, req, res) {
         });
     });
 
+    app.get('/home/oc/createTeam', async function (req, res) {
+        var query = { availability: true };
+
+        query = { role: "First Responder" };
+        await client.db("AFRMS").collection("Employee").find(query).toArray(function (err, employees) {
+                res.render('pages/ocMenu/createTeams', {
+                    frsList: [],
+                    frs: employees,
+                }, createTeam(client, user, req, res));
+        });
+    });
+
     res.redirect('/home/oc');
 }
 
@@ -298,7 +310,7 @@ function createMission(client, user, req, res) {
         if (teamname != null & teamID != null ) {
             var missionID = await dataFunc.addMission(client, {
                 teamName: teamname,
-                teamID: teamID,
+                team: team,
                 author: user,
                 events: eventsList,
                 status: status
@@ -315,6 +327,50 @@ function createMission(client, user, req, res) {
         }
         else {
             console.log("Please insert a valid team for the mission.");
+            return null;
+        }
+
+    });
+}
+
+function createTeam(client, user, req, res) {
+    var frsListID = [];
+    app.post('/AddFR', async (req, res) => {
+        frsListID.push(req.body.frID);
+    });
+
+    app.post('/createTeam', async (req, res) => {
+        var teamname = req.body.teamname;
+        var availability = req.body.availability;
+        var dataFunc = require("./databaseFunctions");
+        //var team = await dataFunc.getTeam(client, null, teamname);
+        //var teamID = team._id;
+        //        app.use(bodyParser.text({ type: 'text/html' }));
+        var frsList = [];
+        for (i in frsListID) {
+            console.log(frsListID[i]);
+            frsList.push(await dataFunc.getEmployee(client, frsListID[i]));
+        }
+
+        if (teamname != null & frsList != null) {
+            var teamID = await dataFunc.addTeam(client, {
+                teamName: teamname,
+                author: user,
+                members: frsList,
+                availability: availability
+            });
+
+            if (teamID != null) {
+                console.log("Created a new team");
+                return teamID;
+            }
+            else {
+                console.log("Failed to create a new team");
+                return null;
+            }
+        }
+        else {
+            console.log("Please insert a valid team for the team.");
             return null;
         }
 
@@ -412,16 +468,23 @@ function approveEvent(client, user, req, res) {
 }
 
 function frMenu(client, user, req, res) {
-    /*
+
     app.get('/home/fr', async function (req, res) {
         //First find out what team they belong too.
         var dataFunc = require("./databaseFunctions");
-        var team = await dataFunc.getTeam(client, user._id);
-        var mission = await dataFunc.getMission(client, team._id);
+        var employee = await dataFunc.getEmployee(client, user._id);
+        var team = await dataFunc.findTeamFromEmployee(client, employee._id);
+        var mission = await dataFunc.findMissionFromEmployee(client, employee._id);
 
         res.render('pages/frMenu/frMenu', {
-            team: team,
-            mission: mission
+            mission_status: mission.status,
+            mission_author_name: mission.author.name,
+            mission_teamName: mission.teamName,
+            mission_events: mission.events,
+            teamname: team.name,
+            teamtype: team.type,
+            availability: team.availability,
+            members: team.members,
         });
 
     });
@@ -433,9 +496,9 @@ function frMenu(client, user, req, res) {
                 
             }, approveEvent(client, user, req, res));
         });
-    });
+
     res.redirect('/home/fr');
-    */
+    
 } 
 
 function updateMission(client, user, team, mission, req, res) {

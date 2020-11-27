@@ -42,7 +42,7 @@
                             <strong>Team Name: <%= team.name %></strong>
                             <p>Team Type: <%= team.type %>
                             <p>Team Status: <%= team.availability %> </p>
-                            <p>Created By: <%= team.createdBy.name %> </p>
+                            <p>Created By: <%= team.author.name %> </p>
                             <ul>
                                 <% team.members.forEach(function(member) { %>
                                 <li>
