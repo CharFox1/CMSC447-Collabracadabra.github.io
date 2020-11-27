@@ -187,7 +187,7 @@ function submitEventPIN(client, user, req, res) {
         console.log(user.username);
         if (name != null & location != null & desc != null) {
             var eventID = await dataFunc.addEvent(client, {
-                PIN: user._id,
+                PIN: user,
                 Username: user.username,
                 Name: name,
                 Number: number,
@@ -472,7 +472,9 @@ function frMenu(client, user, req, res) {
     app.get('/home/fr', async function (req, res) {
         //First find out what team they belong too.
         var dataFunc = require("./databaseFunctions");
-        var employee = await dataFunc.getEmployee(client, user._id);
+        var employee = await dataFunc.getEmployee2(client, user._id);
+        console.log("Employee ID: ");
+        console.log(employee._id);
         var team = await dataFunc.findTeamFromEmployee(client, employee._id);
         var mission = await dataFunc.findMissionFromEmployee(client, employee._id);
 

@@ -145,7 +145,23 @@ exports.getEmployee = async function getEmployee(client, id) {
     var fixID = ObjectID(id);
     const query = { _id: fixID }
     var result = await client.db("AFRMS").collection("Employee").findOne(query);
-    return(result);
+    if (result == null) {
+        console.log("result is null");
+        console.log(id);
+    }
+    return (result);
+}
+
+exports.getEmployee2 = async function getEmployee2(client, id) {
+    var fixID = ObjectID(id);
+    const query = { userID: fixID }
+    var result = await client.db("AFRMS").collection("Employee").findOne(query);
+    if (result == null) {
+        console.log("result is null");
+        console.log(id);
+    }
+    console.log(result._id);
+    return (result);
 }
 
 exports.updateEmployee = async function updateEmployee(client, id, username, pass, name, role, availability) {
@@ -363,7 +379,11 @@ exports.findTeamFromEmployee = async function findTeamFromEmployee(client, emplo
 
     console.log("[findTeamFromEmployee] finding Team");
 
+<<<<<<< HEAD
     var query = {members: {$eq: {_id: employeeID}}};
+=======
+    var query = {members: { $eq: { _id: employeeID }}};
+>>>>>>> b2d319be1e51c4193d60679917e8b4680b62daf1
     var exists = await client.db("AFRMS").collection("Teams").findOne(query);
     if (exists == null) {
         console.log("[findTeamFromEmployee] Employee not found on any Team!");
