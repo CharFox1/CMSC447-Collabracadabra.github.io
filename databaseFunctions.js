@@ -1,7 +1,7 @@
 // This file has all the functions for creating and interacting with the tables in mongodb
 
 const { time } = require("console");
-const { ObjectID } = require("mongodb");
+const { ObjectID, ResumeToken } = require("mongodb");
 
 const tables = ["Users", "Employee", "PIN", "Teams", "Events", "Missions"]
 
@@ -156,23 +156,31 @@ exports.updateEmployee = async function updateEmployee(client, id, username, pas
         console.log("[updateEmployee] User does not exist! Adding it");
         result = await exports.addUser(client, username, pass, name, role);
     } else {
-        result = result._id;
+
+        // update that user
+        var doc = {
+            _id: result,
+            username: username,
+            password: pass,
+            name: name,
+            role: role
+        }
+        console.log("[updateEmployee] User does exist! Updating it");
+        console.log(doc)
+        await client.db("AFRMS").collection("Users").updateOne({_id: result}, {$set: doc});
     }
     // now result should be the userID
-    var userID = result;
-
 
     var collection = client.db("AFRMS").collection("Employee");
     var doc = {
-        userID: userID,
+        userID: result,
         username: username,
         password: pass,
         name: name,
         role: role,
         availability: availability
     };
-    result = await collection.updateOne( {_id: id}, 
-            {$set: doc}, {upsert: true});
+    result = await collection.updateOne( {userID: result}, {$set: doc});
     console.log("[updateEmployee] updating Employee in Employee collection")
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
