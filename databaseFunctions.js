@@ -403,12 +403,16 @@ exports.notOnTeam = async function notOnTeam(client) {
     }
 
     var allEmployees = await exports.getAllEmployees(client);
+    var employeesNotOnTeam = [];
 
-    for (member of employeesInTeams) {
-        if (allEmployees.includes(member)) {
-            // remove stuff
+    for (var e of allEmployees) {
+        if (!employeesInTeams.includes(e)) {
+            // if employee not included in any teams
+            employeesNotOnTeam.push(e);
         }
     }
+
+    return employeesNotOnTeam;
 
 } 
 
