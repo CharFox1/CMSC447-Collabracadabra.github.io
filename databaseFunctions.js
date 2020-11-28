@@ -375,19 +375,15 @@ exports.getTeam = async function getTeam(client, teamID, teamName) {
     return(exists);
 }
 
-exports.findTeamFromEmployee = async function findTeamFromEmployee(client, employeeID) {
+exports.findTeamFromEmployee = async function findTeamFromEmployee(client, employee) {
 
     console.log("[findTeamFromEmployee] finding Team");
 
-<<<<<<< HEAD
-    var query = {members: {$eq: {_id: employeeID}}};
-=======
-    var query = {members: { $eq: { _id: employeeID }}};
->>>>>>> b2d319be1e51c4193d60679917e8b4680b62daf1
+    var query = {members: employee};
     var exists = await client.db("AFRMS").collection("Teams").findOne(query);
     if (exists == null) {
         console.log("[findTeamFromEmployee] Employee not found on any Team!");
-        return;
+        return null;
     }
     return exists;
 }
@@ -459,11 +455,11 @@ exports.findMissionFromTeam = async function findMissionFromTeam(client, teamID)
     return exists;
 }
 
-exports.findMissionFromEmployee = async function findMissionFromEmployee(client, employeeID) {
+exports.findMissionFromEmployee = async function findMissionFromEmployee(client, employee) {
 
     console.log("[findMissionFromEmployee] finding Mission");
 
-    var teamID = await exports.findTeamFromEmployee(client, employeeID);
+    var teamID = await exports.findTeamFromEmployee(client, employee)._id;
     if (teamID == null) {
         console.log("[findMissionFromEmployee] Employee is not valid or not on any teams!");
         return;
