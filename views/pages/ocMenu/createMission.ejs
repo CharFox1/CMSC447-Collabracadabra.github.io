@@ -20,8 +20,8 @@
 
         <main>
             <div class = "row">
-                <div class = "col-sm-8">
-                    <div class="jumbotron">
+                <div class = "col-sm-12">
+                    <div class="jumbotron text-center">
                     <form action="/createMission" method="POST"> 
                         <h1>Create New Mission</h1>
                         <p>Team Name: <input type="text" name="teamname"></p>
@@ -34,7 +34,9 @@
                     </form>
                     </div>
                 </div>
-            <div class="col-sm-4">
+            </div>
+            <div class = "row">
+            <div class="col-sm-6">
                 <div class="well">
                      <h1>Available First Responder Teams</h1>
                         <ul>
@@ -51,7 +53,12 @@
                             <% }); %>
                         </ul>
                     <% }); %>
-                    
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="well">
+
                      <h1>Unassigned Events</h1>
                     <ul>
                         <% events.forEach(function(event) { %>
@@ -66,8 +73,7 @@
                             </form>
                     <% }); %>
                     </ul>
-            </div>
-    
+                </div>
             </div>
         </main>
         <footer>
