@@ -17,6 +17,10 @@ function main() {
         app.get('/', function (req, res) { res.render('pages/signinPage'); });
         app.get('/createUser', function (req, res) { res.render('pages/createUser'); });
         app.get('/submitEvent', function (req, res) { res.render('pages/submitEvent', submitEvent(client, req, res)); });
+        app.get('/map', async function (req, res) {
+            res.render('pages/map', {
+            })
+        });
 
         app.use(bodyParser.urlencoded({ extended: true }));
         var userID = signIn(client);
@@ -165,6 +169,10 @@ function pinMenu(client, user, req, res) {
             number: number
         });
     });
+    app.get('/home/pin/map', async function (req, res) {
+        res.render('pages/pinMenu/pinMap', {
+        })
+    });
     res.redirect('/home/pin');
 }
 
@@ -284,7 +292,10 @@ function ocMenu(client, user, req, res) {
                 }, createTeam(client, user, req, res));
         });
     });
-
+    app.get('/home/oc/map', async function (req, res) {
+        res.render('pages/ocMenu/ocMap', {
+        })
+    });
     res.redirect('/home/oc');
 }
 
@@ -406,6 +417,10 @@ function dispMenu(client, user, req, res) {
             }, approveEvent(client, user, req, res));
         });
     });
+    app.get('/home/disp/map', async function (req, res) {
+        res.render('pages/dispMenu/dispMap', {
+        })
+    });
     res.redirect('/home/disp');
 }
 
@@ -509,7 +524,7 @@ function frMenu(client, user, req, res) {
                 teamname: null,
                 teamtype: null,
                 availability: null,
-                members: null,
+                members: [],
             });
         }
     });
@@ -544,6 +559,10 @@ function frMenu(client, user, req, res) {
             }, updateMission(client, user, req, res));
         }
     });
+    app.get('/home/fr/map', async function (req, res) {
+        res.render('pages/frMenu/frMap', {
+        })
+    });
     res.redirect('/home/fr');
     
 } 
@@ -575,13 +594,8 @@ function adminMenu(client, user, req, res) {
         });
     });
     app.get('/home/admin/map', async function (req, res) {
-        //await client.db("AFRMS").collection("Users").find().toArray(function (err, users) {
-
             res.render('pages/adminMenu/adminMap', {
-        //        //map = new Microsoft.Maps.Map(document.getElementById('myMap'), {});
-        //        myMap: new Microsoft.Maps.Map('#myMap')
             },)
-        //});
     });
     res.redirect('/home/admin');
 }
