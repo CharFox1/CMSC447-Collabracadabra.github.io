@@ -73,7 +73,12 @@ async function main() {
             events: [event],
             status: "Urgent"
         }
-        var mission = await db.addMission(client, mission);
+        var missionID = await db.addMission(client, mission);
+
+        mission.status = "Updated!";
+        mission._id = missionID;
+
+        await db.updateMission(client, mission);
 
         //event.location = "NEW";
         //await db.updateEvent(client, event);

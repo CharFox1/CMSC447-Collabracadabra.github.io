@@ -439,7 +439,9 @@ exports.getMission = async function getMission(client, missionID) {
 
 exports.updateMission = async function updateMission(client, mission) {
     
-    result = await collection.updateOne( {_id: mission.id}, 
+    console.log("[updateMission] updating Mission")
+    console.log(mission._id);
+    result = await client.db("AFRMS").collection("Missions").updateOne({_id: mission._id}, 
         {$set: mission});
     console.log("[updateMission]:")
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
