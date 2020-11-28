@@ -515,9 +515,6 @@ function frMenu(client, user, req, res) {
     });
     app.get('/home/fr/updateMission', async function (req, res) {
         var dataFunc = require("./databaseFunctions");
-        var mission = await dataFunc.getMission(client, team._id);
-
-        var dataFunc = require("./databaseFunctions");
         var employee = await dataFunc.getEmployee2(client, user._id);
         var team = await dataFunc.findTeamFromEmployee(client, employee);
         var mission = await dataFunc.findMissionFromTeam(client, team);
@@ -528,10 +525,6 @@ function frMenu(client, user, req, res) {
                 mission_author_name: mission.author.name,
                 mission_teamName: mission.teamName,
                 mission_events: mission.events,
-                teamname: team.teamName,
-                teamtype: team.type,
-                availability: team.availability,
-                members: team.members,
             }, updateMission(client, user, req, res));
         }
         else if (mission == null && team != null) {
@@ -540,10 +533,6 @@ function frMenu(client, user, req, res) {
                 mission_author_name: null,
                 mission_teamName: null,
                 mission_events: [],
-                teamname: team.name,
-                teamtype: team.type,
-                availability: team.availability,
-                members: team.members,
             }, updateMission(client, user, req, res));
         }
         else if (mission == null && team == null) {
@@ -552,12 +541,9 @@ function frMenu(client, user, req, res) {
                 mission_author_name: null,
                 mission_teamName: null,
                 mission_events: [],
-                teamname: null,
-                teamtype: null,
-                availability: null,
-                members: null,
             }, updateMission(client, user, req, res));
         }
+    });
     res.redirect('/home/fr');
     
 } 
@@ -589,13 +575,13 @@ function adminMenu(client, user, req, res) {
         });
     });
     app.get('/home/admin/map', async function (req, res) {
-        await client.db("AFRMS").collection("Users").find().toArray(function (err, users) {
+        //await client.db("AFRMS").collection("Users").find().toArray(function (err, users) {
 
             res.render('pages/adminMenu/adminMap', {
-                //map = new Microsoft.Maps.Map(document.getElementById('myMap'), {});
-                myMap: new Microsoft.Maps.Map('#myMap')
+        //        //map = new Microsoft.Maps.Map(document.getElementById('myMap'), {});
+        //        myMap: new Microsoft.Maps.Map('#myMap')
             },)
-        });
+        //});
     });
     res.redirect('/home/admin');
 }

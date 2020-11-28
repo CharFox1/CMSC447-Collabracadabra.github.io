@@ -30,9 +30,8 @@
                     </li>
                  <% }); %>
                  </ul>
-                <form action="/ApproveEvent" method="POST">
+                <form action="/UpdateMission" method="POST">
                     <input type="text" name="status" value="<%=mission_status%>">
-                    <input type ="hidden" name="MissionID" id="id" value="<%=mission._id%>">    
                     <button type="submit">Update Mission</button>
                 </form>
             </div>
