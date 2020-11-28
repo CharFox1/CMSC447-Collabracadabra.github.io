@@ -18,9 +18,8 @@ async function main() {
         console.log("\n[[dbTest]] listing databases");
         await db.listDatabases(client);
 
-        console.log("\n[[dbTest]] cleaning database");
-        await db.cleanDatabase(client);
-
+        //console.log("\n[[dbTest]] cleaning database");
+        //await db.cleanDatabase(client);
 
         console.log("\n[[dbTest]] adding users");
         await db.addUser(client, null, null, "Mr. null", "default");
@@ -61,7 +60,7 @@ async function main() {
         var employees = await db.getAllEmployees(client); 
         var team = {
             name: "cool team",
-            createdBy: employees[0],
+            author: employees[0],
             members: employees,
             availability: true
         }
@@ -76,8 +75,17 @@ async function main() {
         }
         var mission = await db.addMission(client, mission);
 
-        event.location = "NEW";
-        await db.updateEvent(client, event);
+        //event.location = "NEW";
+        //await db.updateEvent(client, event);
+        
+        console.log("[[dbTest]] testing findTeamFromEmployee");
+        var employee = employees[0];
+        console.log("[[dbTest]] employee to be found:");
+        console.log(employee);
+        result = await db.findTeamFromEmployee(client, employee);
+        console.log("[[dbTest]] team found:");
+        console.log(result);
+
 
     } catch (e) {
         console.error(e);

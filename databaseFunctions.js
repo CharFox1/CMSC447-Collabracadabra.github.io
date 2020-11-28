@@ -375,18 +375,42 @@ exports.getTeam = async function getTeam(client, teamID, teamName) {
     return(exists);
 }
 
-exports.findTeamFromEmployee = async function findTeamFromEmployee(client, employeeID) {
+exports.findTeamFromEmployee = async function findTeamFromEmployee(client, employee) {
 
     console.log("[findTeamFromEmployee] finding Team");
 
-    var query = {members: { $eq: { _id: employeeID }}};
+    var query = {members: employee};
     var exists = await client.db("AFRMS").collection("Teams").findOne(query);
     if (exists == null) {
         console.log("[findTeamFromEmployee] Employee not found on any Team!");
-        return;
+        return null;
     }
     return exists;
 }
+
+exports.notOnTeam = async function notOnTeam(client) {
+
+    console.log("[notOnTeam] finding employees not on any team");
+
+    var teams = await client.db("AFRMS").collection("Teams").find().toArray();
+    var employeesInTeams = [];
+
+    for (var team of teams) {
+        members = team.members();
+        for (var member of members) {
+            employeesInTeams.push(member);
+        }
+    }
+
+    var allEmployees = await exports.getAllEmployees(client);
+
+    for (member of employeesInTeams) {
+        if (allEmployees.includes(member)) {
+            // remove stuff
+        }
+    }
+
+} 
 
 // add mission
 // mission doc should be of the format {team: team, author: employee, events: [event(s)], status: int}
@@ -431,11 +455,11 @@ exports.findMissionFromTeam = async function findMissionFromTeam(client, teamID)
     return exists;
 }
 
-exports.findMissionFromEmployee = async function findMissionFromEmployee(client, employeeID) {
+exports.findMissionFromEmployee = async function findMissionFromEmployee(client, employee) {
 
     console.log("[findMissionFromEmployee] finding Mission");
 
-    var teamID = await exports.findTeamFromEmployee(client, employeeID);
+    var teamID = await exports.findTeamFromEmployee(client, employee)._id;
     if (teamID == null) {
         console.log("[findMissionFromEmployee] Employee is not valid or not on any teams!");
         return;
