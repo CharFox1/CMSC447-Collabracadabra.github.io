@@ -22,10 +22,10 @@
             <div class="jumbotron">
             <h1>First Responder Teams</h1>
                 <% teams.forEach(function(team) { %>              
-                    <strong>Team Name: <%= team.name %></strong>
+                    <strong>Team Name: <%= team.teamName %></strong>
                     <p>Team Type: <%= team.type %>
                     <p>Team Status: <%= team.availability %> </p>
-                    <p>Created By: <%= team.createdBy.name %> </p>
+                    <p>Created By: <%= team.author.name %> </p>
                     <ul>
                         <% team.members.forEach(function(member) { %>
                         <li>
