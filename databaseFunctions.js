@@ -366,7 +366,7 @@ exports.getTeam = async function getTeam(client, teamID, teamName) {
     }
     else {
         console.log(teamName);
-        var exists = await client.db("AFRMS").collection("Teams").findOne({ name: teamName });
+        var exists = await client.db("AFRMS").collection("Teams").findOne({ teamName: teamName });
         if (exists == null) {
             console.log("[getTeam] there is no Team with this name!");
             return;
@@ -442,11 +442,11 @@ exports.updateMission = async function updateMission(client, mission) {
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
 }
 
-exports.findMissionFromTeam = async function findMissionFromTeam(client, teamID) {
+exports.findMissionFromTeam = async function findMissionFromTeam(client, team) {
 
     console.log("[findMissionFromTeam] finding Mission");
 
-    var query = {teamID: teamID};
+    var query = { team: team};
     var exists = await client.db("AFRMS").collection("Missions").findOne(query);
     if (exists == null) {
         console.log("[findMissionFromTeam] Employee not found on any Team!");
@@ -459,13 +459,13 @@ exports.findMissionFromEmployee = async function findMissionFromEmployee(client,
 
     console.log("[findMissionFromEmployee] finding Mission");
 
-    var teamID = await exports.findTeamFromEmployee(client, employee)._id;
-    if (teamID == null) {
+    var team = await exports.findTeamFromEmployee(client, employee);
+    if (team == null) {
         console.log("[findMissionFromEmployee] Employee is not valid or not on any teams!");
         return;
     }
 
-    var result = await exports.findMissionFromTeam(client, teamID);
+    var result = await exports.findMissionFromTeam(client, team);
     if (result == null) {
         console.log("[findMissionFromEmployee] Employee Team is not in any Missions!");
         return;

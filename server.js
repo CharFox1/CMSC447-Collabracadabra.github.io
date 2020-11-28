@@ -473,39 +473,104 @@ function frMenu(client, user, req, res) {
         //First find out what team they belong too.
         var dataFunc = require("./databaseFunctions");
         var employee = await dataFunc.getEmployee2(client, user._id);
-        console.log("Employee ID: ");
-        console.log(employee._id);
         var team = await dataFunc.findTeamFromEmployee(client, employee);
-        var mission = await dataFunc.findMissionFromEmployee(client, employee);
+        var mission = await dataFunc.findMissionFromTeam(client, team);
 
-        res.render('pages/frMenu/frMenu', {
-            mission_status: mission.status,
-            mission_author_name: mission.author.name,
-            mission_teamName: mission.teamName,
-            mission_events: mission.events,
-            teamname: team.name,
-            teamtype: team.type,
-            availability: team.availability,
-            members: team.members,
-        });
-
+        if (team != null && mission != null) {
+            res.render('pages/frMenu/frMenu', {
+                mission_status: mission.status,
+                mission_author_name: mission.author.name,
+                mission_teamName: mission.teamName,
+                mission_events: mission.events,
+                teamname: team.teamName,
+                teamtype: team.type,
+                availability: team.availability,
+                members: team.members,
+            });
+        }
+        else if (mission == null && team != null) {
+            res.render('pages/frMenu/frMenu', {
+                mission_status: null,
+                mission_author_name: null,
+                mission_teamName: null,
+                mission_events: [],
+                teamname: team.name,
+                teamtype: team.type,
+                availability: team.availability,
+                members: team.members,
+            });
+        }
+        else if (mission == null && team == null) {
+            res.render('pages/frMenu/frMenu', {
+                mission_status: null,
+                mission_author_name: null,
+                mission_teamName: null,
+                mission_events: [],
+                teamname: null,
+                teamtype: null,
+                availability: null,
+                members: null,
+            });
+        }
     });
     app.get('/home/fr/updateMission', async function (req, res) {
         var dataFunc = require("./databaseFunctions");
         var mission = await dataFunc.getMission(client, team._id);
 
-            res.render('pages/frMenu/updateMission', {
-                
-            }, approveEvent(client, user, req, res));
-        });
+        var dataFunc = require("./databaseFunctions");
+        var employee = await dataFunc.getEmployee2(client, user._id);
+        var team = await dataFunc.findTeamFromEmployee(client, employee);
+        var mission = await dataFunc.findMissionFromTeam(client, team);
 
+        if (team != null && mission != null) {
+            res.render('pages/frMenu/updateMission', {
+                mission_status: mission.status,
+                mission_author_name: mission.author.name,
+                mission_teamName: mission.teamName,
+                mission_events: mission.events,
+                teamname: team.teamName,
+                teamtype: team.type,
+                availability: team.availability,
+                members: team.members,
+            }, updateMission(client, user, req, res));
+        }
+        else if (mission == null && team != null) {
+            res.render('pages/frMenu/updateMission', {
+                mission_status: null,
+                mission_author_name: null,
+                mission_teamName: null,
+                mission_events: [],
+                teamname: team.name,
+                teamtype: team.type,
+                availability: team.availability,
+                members: team.members,
+            }, updateMission(client, user, req, res));
+        }
+        else if (mission == null && team == null) {
+            res.render('pages/frMenu/updateMission', {
+                mission_status: null,
+                mission_author_name: null,
+                mission_teamName: null,
+                mission_events: [],
+                teamname: null,
+                teamtype: null,
+                availability: null,
+                members: null,
+            }, updateMission(client, user, req, res));
+        }
     res.redirect('/home/fr');
     
 } 
 
-function updateMission(client, user, team, mission, req, res) {
+function updateMission(client, user, req, res) {
     app.post('/UpdateMission', async (req, res) => {
         var status = req.body.status;
+
+        var dataFunc = require("./databaseFunctions");
+        var employee = await dataFunc.getEmployee2(client, user._id);
+        var team = await dataFunc.findTeamFromEmployee(client, employee);
+        var mission = await dataFunc.findMissionFromTeam(client, team);
+
 
         mission.status = status;
         team.status = status;

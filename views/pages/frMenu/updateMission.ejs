@@ -20,15 +20,20 @@
 
         <main>
             <div class="jumbotron">
-                <h1>Mission Information</h1>
-                <p>Username: <%= username %></p>
-                <p>Name: <%= name %></p>
-                <p>Email: <%= email %></p>
-                <p>Phone Number: <%= number %></p>
+                <h1>Mission Information: </h1>
+                    <p>Author: <%= mission_author_name %> </p>
+                    <p>Team: <%= mission_teamName %> </p>
+                <ul>
+                <% mission_events.forEach(function(event) { %>
+                    <li>
+                    Event Location: <%= event.location %>, Description <%= event.description %> PIN: <%= event.PIN.name %>, Time: <%= event.timestamp %>
+                    </li>
+                 <% }); %>
+                 </ul>
                 <form action="/ApproveEvent" method="POST">
-                    <input type="text" placeholder="Status" name="status">
+                    <input type="text" name="status" value="<%=mission_status%>">
                     <input type ="hidden" name="MissionID" id="id" value="<%=mission._id%>">    
-                    <button type="submit">Approve Event</button>
+                    <button type="submit">Update Mission</button>
                 </form>
             </div>
         </main>
