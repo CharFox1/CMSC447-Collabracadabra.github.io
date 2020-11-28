@@ -10,7 +10,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
         <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=Akk01vko6U7AknIQbuqPOOwSg2jiZwTKoqvkDKtrIB6i-An4f2J-n4-LKCFILYOD%27%3E'></script>
         <%- include('../../Partials/head'); %>
-
+        
         <script type='text/javascript'>
                 var map;
                 function loadMapScenario() 
@@ -20,7 +20,7 @@
         </script>
 
     </head>
-    <body class="container">
+    <body class="container", onload = 'loadMapScenario();'>
 
 
         <header>
@@ -28,10 +28,9 @@
         </header>
 
 
-        <main onload = 'loadMapScenario();'>
-        <div id='myMap' style='top: 0; width: 100vw; height: 100vw; z-index: 0;'></div>
+     
+        <div id='myMap' style='top: 0; width: 100vw; height: 100vw; z-index: 1;'></div>
 
-        </main>
 
         <footer>
         <%- include('../../Partials/footer'); %>
