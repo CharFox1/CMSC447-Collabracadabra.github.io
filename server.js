@@ -352,6 +352,7 @@ function createTeam(client, user, req, res) {
 
     app.post('/createTeam', async (req, res) => {
         var teamname = req.body.teamname;
+        var teamtype = req.body.teamtype;
         var availability = req.body.availability;
         var dataFunc = require("./databaseFunctions");
         //var team = await dataFunc.getTeam(client, null, teamname);
@@ -366,6 +367,7 @@ function createTeam(client, user, req, res) {
         if (teamname != null & frsList != null) {
             var teamID = await dataFunc.addTeam(client, {
                 teamName: teamname,
+                teamType: teamtype,
                 author: user,
                 members: frsList,
                 availability: availability
