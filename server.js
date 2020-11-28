@@ -475,8 +475,8 @@ function frMenu(client, user, req, res) {
         var employee = await dataFunc.getEmployee2(client, user._id);
         console.log("Employee ID: ");
         console.log(employee._id);
-        var team = await dataFunc.findTeamFromEmployee(client, employee._id);
-        var mission = await dataFunc.findMissionFromEmployee(client, employee._id);
+        var team = await dataFunc.findTeamFromEmployee(client, employee);
+        var mission = await dataFunc.findMissionFromEmployee(client, employee);
 
         res.render('pages/frMenu/frMenu', {
             mission_status: mission.status,
@@ -521,6 +521,15 @@ function adminMenu(client, user, req, res) {
             res.render('pages/adminMenu/adminMenu', {
                 users: users
             }, changeRole(client, user, req, res));
+        });
+    });
+    app.get('/home/admin/map', async function (req, res) {
+        await client.db("AFRMS").collection("Users").find().toArray(function (err, users) {
+
+            res.render('pages/adminMenu/adminMap', {
+                //map = new Microsoft.Maps.Map(document.getElementById('myMap'), {});
+                myMap: new Microsoft.Maps.Map('#myMap')
+            },)
         });
     });
     res.redirect('/home/admin');
