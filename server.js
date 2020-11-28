@@ -355,9 +355,7 @@ function createTeam(client, user, req, res) {
         var teamtype = req.body.teamtype;
         var availability = req.body.availability;
         var dataFunc = require("./databaseFunctions");
-        //var team = await dataFunc.getTeam(client, null, teamname);
-        //var teamID = team._id;
-        //        app.use(bodyParser.text({ type: 'text/html' }));
+
         var frsList = [];
         for (i in frsListID) {
             console.log(frsListID[i]);
@@ -480,6 +478,7 @@ function approveEvent(client, user, req, res) {
         var event = await dataFunc.getEvent(client, eventID);
         event.severity = severity;
         event.Employee = user;
+
         await dataFunc.updateEvent(client, event);
     });
 }
