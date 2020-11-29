@@ -12,7 +12,7 @@ function main() {
         console.log('Connected to the server');
         if (err) return console.log(err);
         var client = client;
-        app.listen(3000, () => { console.log('listening on 3000') });
+        app.listen(process.env.PORT || 3000);
 
         app.get('/', function (req, res) { res.render('pages/signinPage'); });
         app.get('/createUser', function (req, res) { res.render('pages/createUser'); });
