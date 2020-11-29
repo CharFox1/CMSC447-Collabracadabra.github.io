@@ -8,7 +8,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-        <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=Akk01vko6U7AknIQbuqPOOwSg2jiZwTKoqvkDKtrIB6i-An4f2J-n4-LKCFILYOD%27%3E'></script>
+        <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=Akk01vko6U7AknIQbuqPOOwSg2jiZwTKoqvkDKtrIB6i-An4f2J-n4-LKCFILYOD'></script>
         <%- include('../../Partials/head'); %>
         
         <script type='text/javascript'>
@@ -16,6 +16,25 @@
                 function loadMapScenario() 
                 {
                     map = new Microsoft.Maps.Map(document.getElementById('myMap'), {});
+
+                    Microsoft.Maps.loadModule('Microsoft.Maps.AutoSuggest', function () 
+                    {
+                        var options = {maxResults: 4, map: map};
+                        var manager = new Microsoft.Maps.AutosuggestManager(options);
+                        manager.attachAutosuggest('#searchBox', '#searchBoxContainer', selectedSuggestion);
+                    });
+                    function selectedSuggestion(suggestionResult) 
+                    {
+                        map.entities.clear();
+                        map.setView({ bounds: suggestionResult.bestView });
+                        var pushpin = new Microsoft.Maps.Pushpin(suggestionResult.location);
+                        map.entities.push(pushpin);
+                        document.getElementById('printoutPanel').innerHTML =
+                            'Suggestion: ' + suggestionResult.formattedSuggestion +
+                            '<br> Lat: ' + suggestionResult.location.latitude +
+                            '<br> Lon: ' + suggestionResult.location.longitude;
+                    }
+                    
                 }
         </script>
 
@@ -27,8 +46,8 @@
         <%- include('../../Partials/DISPheader'); %>
         </header>
 
-
-     
+        <div id='printoutPanel'></div>
+        <div id='searchBoxContainer'><input type= 'text' id= 'searchBox'/></div>     
         <div id='myMap' style='top: 0; width: 60vw; height: 1000px; z-index: 1;'></div>
 
 

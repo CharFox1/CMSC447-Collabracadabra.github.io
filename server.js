@@ -34,6 +34,11 @@ function signIn(client) {
     app.post('/Userlogin', async (req, res) => {
         var username = req.body.username;
         var pass = req.body.password;
+
+        if (username == null || pass == null) {
+            
+        }
+
         console.log("username and pass are set");
 
         console.log("Searching for user: ");
