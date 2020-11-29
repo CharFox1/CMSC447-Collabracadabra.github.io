@@ -503,19 +503,20 @@ function frMenu(client, user, req, res) {
                 mission_teamName: mission.teamName,
                 mission_events: mission.events,
                 teamname: team.teamName,
-                teamtype: team.type,
+                teamtype: team.teamType,
                 availability: team.availability,
                 members: team.members,
             });
         }
         else if (mission == null && team != null) {
+            console.log("In a team but is not assigned to a mission");
             res.render('pages/frMenu/frMenu', {
-                mission_status: null,
+                mission_status: "Unassigned",
                 mission_author_name: null,
                 mission_teamName: null,
                 mission_events: [],
-                teamname: team.name,
-                teamtype: team.type,
+                teamname: team.teamName,
+                teamtype: team.teamType,
                 availability: team.availability,
                 members: team.members,
             });
@@ -587,7 +588,6 @@ function updateMission(client, user, req, res) {
         await dataFunc.updateMission(client, mission);
         await dataFunc.updateTeam(client, team)
     });
-    res.redirect('/home/fr/updateMission');
 }
 
 function adminMenu(client, user, req, res) {
