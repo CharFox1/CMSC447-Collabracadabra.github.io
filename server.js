@@ -137,18 +137,16 @@ function submitEvent(client, req, res) {
 
             if (eventID != null) {
                 console.log("Created a new event");
-                return eventID;
             }
             else {
                 console.log("Failed to create a new event");
-                return null;
             }
         }
         else {
             console.log("Please insert a name, location, and description for the event.");
-            return null;
         }
-
+        res.redirect('/');
+        return eventID;
     });
 }
 
@@ -221,7 +219,7 @@ function submitEventPIN(client, user, req, res) {
             console.log("Please insert a name, location, and description for the event.");
             return null;
         }
-
+        res.redirect('/home/pin');
     });
 
 }
@@ -340,7 +338,7 @@ function createMission(client, user, req, res) {
             console.log("Please insert a valid team for the mission.");
             return null;
         }
-
+        res.redirect('/home/oc/createMission');
     });
 }
 
@@ -384,7 +382,7 @@ function createTeam(client, user, req, res) {
             console.log("Please insert a valid team for the team.");
             return null;
         }
-
+        res.redirect('/home/oc/createTeam');
     });
 }
 
@@ -466,7 +464,7 @@ function createEvent(client, user, req, res) {
             console.log("Please insert a name, location, and description for the event.");
             return null;
         }
-
+        res.redirect('/home/disp');
     });
 
 }
@@ -480,6 +478,7 @@ function approveEvent(client, user, req, res) {
         event.Employee = user;
 
         await dataFunc.updateEvent(client, event);
+        res.redirect('/home/disp/approveEvents');
     });
 }
 
@@ -583,6 +582,7 @@ function updateMission(client, user, req, res) {
         await dataFunc.updateMission(client, mission);
         await dataFunc.updateTeam(client, team)
     });
+    res.redirect('/home/fr/updateMission');
 }
 
 function adminMenu(client, user, req, res) {
@@ -616,6 +616,7 @@ function changeRole(client, user, req, res) {
                 await dataFunc.updateEmployee(client, userID, user.username, user.password, user.name, role, user.availability);
             }
         }
+        res.redirect('/home/admin');
     });
 }
 
