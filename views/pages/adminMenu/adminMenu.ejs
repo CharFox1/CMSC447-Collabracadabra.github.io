@@ -26,9 +26,23 @@
                     <p>Password: <%= user.password %> </p>
                     <p>name: <%= user.name %> </p>
                     <form action="/ChangeRole" method="POST">
-                    <input type="text" name="role" value="<%=user.role%>">
+                        <div class="row">
+                         <div class="form-group col-sm-4">
+                            <select class="form-control" id="sel1" name="role">
+                                <option value="" disabled selected>Change Role</option>
+                              <option>Admin</option>
+                              <option>Operations Chief</option>
+                              <option>Dispatcher</option>
+                              <option>First Responder</option>
+                              <option>PIN</option>
+                            </select>
+                          </div>
+                          <div>
+                            <button type="submit">Change Role</button>
+                          </div>
+                        </div>
+                    <input type="text" name="rolex" value="<%=user.role%>">
                     <input type ="hidden" name="UserID" id="id" value="<%=user._id%>">    
-                    <button type="submit">Change Role</button>
                     </form>
                     <% }); %>
             </div>
