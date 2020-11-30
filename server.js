@@ -35,10 +35,6 @@ function signIn(client) {
         var username = req.body.username;
         var pass = req.body.password;
 
-        if (username == null || pass == null) {
-            
-        }
-
         console.log("username and pass are set");
 
         console.log("Searching for user: ");
@@ -92,27 +88,32 @@ function signIn(client) {
         var pass = req.body.password;
         var name = req.body.name;
 
-        var dataFunc = require("./databaseFunctions");
-        var userID = await dataFunc.addUser(client, username, pass, name ,"PIN");
+        if (username != "" && pass != "" && name != "") {
+            console.log("All information was filled out");
+            var dataFunc = require("./databaseFunctions");
+            var userID = await dataFunc.addUser(client, username, pass, name, "PIN");
 
-        if (userID == null) {
-            console.log("Username unavailable");
-            return null;
-        }
-        else {
-            console.log("Successfully created a new user");
-            res.redirect("/");
-        }
+            if (userID == null) {
+                console.log("Username unavailable");
+                return null;
+            }
+            else {
+                console.log("Successfully created a new user");
+                res.redirect("/");
+            }
 
-        if (userID == null) {
-            console.log("Unable to create user");
-            return null;
-        }
-        else {
-            console.log("User created successfully");
-            return userID;
+            if (userID == null) {
+                console.log("Unable to create user");
+                return null;
+            }
+            else {
+                console.log("User created successfully");
+                return userID;
+            }
         }
     });
+
+
 }
 
 
@@ -270,15 +271,16 @@ function ocMenu(client, user, req, res) {
     });
 
     app.get('/home/oc/createMission', async function (req, res) {
-        var query = { availability: true };
-        
-        query = { mission: null };
+
+        var query = { mission: null };
         await client.db("AFRMS").collection("Events").find(query).toArray(function (err, events) {
+            query = { availability: true };
             client.db("AFRMS").collection("Teams").find(query).toArray(function (err, teams) {
                 res.render('pages/ocMenu/createMission', {
                     eventsList: [],
                     events: events,
-                    teams: teams
+                    teams: teams,
+                    errmsg: ""
                 }, createMission(client, user, req, res));
             });
         });
@@ -311,9 +313,7 @@ function createMission(client, user, req, res) {
     app.post('/createMission', async (req, res) => {
         var teamname = req.body.teamname;
         var status = req.body.status;
-        var dataFunc = require("./databaseFunctions");
-        var team = await dataFunc.getTeam(client, null, teamname);
-        var teamID = team._id;
+
 //        app.use(bodyParser.text({ type: 'text/html' }));
         var eventsList = [];
         for (i in eventsListID) {
@@ -321,7 +321,10 @@ function createMission(client, user, req, res) {
             eventsList.push(await dataFunc.getEvent(client, eventsListID[i]));
         }
 
-        if (teamname != null & teamID != null ) {
+        if (teamname != "" && teamID != null && eventsList.length != 0) {
+            var dataFunc = require("./databaseFunctions");
+            var team = await dataFunc.getTeam(client, null, teamname);
+            var teamID = team._id;
             var missionID = await dataFunc.addMission(client, {
                 teamName: teamname,
                 team: team,
@@ -339,9 +342,13 @@ function createMission(client, user, req, res) {
                 return null;
             }
         }
-        else {
+        else if (teamname == "" || teamID == null) {
             console.log("Please insert a valid team for the mission.");
-            return null;
+        }
+        else if (eventsList.length == 0) {
+            return res.put({
+                message: 'Select an Event for the mission'
+            });
         }
         res.redirect('/home/oc/createMission');
     });
@@ -365,29 +372,32 @@ function createTeam(client, user, req, res) {
             frsList.push(await dataFunc.getEmployee(client, frsListID[i]));
         }
 
-        if (teamname != null & frsList != null) {
-            var teamID = await dataFunc.addTeam(client, {
-                teamName: teamname,
-                teamType: teamtype,
-                author: user,
-                members: frsList,
-                availability: availability
-            });
+        if (frsList.length != 0 && teamname != "" && teamtype != "" && availability != "") {
 
-            if (teamID != null) {
-                console.log("Created a new team");
-                return teamID;
+            if (teamname != null & frsList != null) {
+                var teamID = await dataFunc.addTeam(client, {
+                    teamName: teamname,
+                    teamType: teamtype,
+                    author: user,
+                    members: frsList,
+                    availability: availability
+                });
+
+                if (teamID != null) {
+                    console.log("Created a new team");
+                    return teamID;
+                }
+                else {
+                    console.log("Failed to create a new team");
+                    return null;
+                }
             }
             else {
-                console.log("Failed to create a new team");
+                console.log("Please insert a valid team for the team.");
                 return null;
             }
+            res.redirect('/home/oc/createTeam');
         }
-        else {
-            console.log("Please insert a valid team for the team.");
-            return null;
-        }
-        res.redirect('/home/oc/createTeam');
     });
 }
 
@@ -441,7 +451,7 @@ function createEvent(client, user, req, res) {
 
         console.log(user._id);
         console.log(user.username);
-        if (name != null & location != null & desc != null & urgency != null) {
+        if (name != "" && location != "" && desc != "" && urgency != "") {
             var eventID = await dataFunc.addEvent(client, {
                 PIN: user._id,
                 Username: user.username,
