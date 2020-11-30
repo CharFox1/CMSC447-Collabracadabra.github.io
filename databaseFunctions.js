@@ -315,13 +315,17 @@ exports.updateEvent = async function updateEvent(client, event) {
 exports.getEvent = async function getEvent(client, id) {
 
     var fixID = ObjectID(id);
-    const query = { _id: fixID }
+    const query = { _id: fixID };
     var result = await client.db("AFRMS").collection("Events").findOne(query);
     if (result == null) {
         console.log("result is null");
         console.log(id);
     }
     return (result);
+}
+
+exports.getAllEvents = async function getAllEvents(client) {
+    return await client.db("AFRMS").collection("Events").find();
 }
 
 // add team
