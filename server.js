@@ -621,16 +621,19 @@ function changeRole(client, user, req, res) {
         var dataFunc = require("./databaseFunctions");
         //var user = await dataFunc.getUser(client, userID);
         var role = req.body.role;
-        await dataFunc.updateRole(client, userID, role);
-        if (role != "PIN") {
-            var user = await dataFunc.getUser(client, userID);
-            var employee = await dataFunc.addEmployee(client, user.username, user.password, user.name, role, "available")
-            if (employee == null) {
-                console.log("Employee already exists, updating employee info");
-                await dataFunc.updateEmployee(client, userID, user.username, user.password, user.name, role, user.availability);
+
+        if (role != null) {
+            await dataFunc.updateRole(client, userID, role);
+            if (role != "PIN") {
+                var user = await dataFunc.getUser(client, userID);
+                var employee = await dataFunc.addEmployee(client, user.username, user.password, user.name, role, "available")
+                if (employee == null) {
+                    console.log("Employee already exists, updating employee info");
+                    await dataFunc.updateEmployee(client, userID, user.username, user.password, user.name, role, user.availability);
+                }
             }
-        }
         res.redirect('/home/admin');
+        }
     });
 }
 
