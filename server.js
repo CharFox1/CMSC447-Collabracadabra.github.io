@@ -280,7 +280,6 @@ function ocMenu(client, user, req, res) {
                     eventsList: [],
                     events: events,
                     teams: teams,
-                    errmsg: ""
                 }, createMission(client, user, req, res));
             });
         });
