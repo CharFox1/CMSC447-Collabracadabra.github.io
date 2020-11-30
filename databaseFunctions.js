@@ -187,8 +187,16 @@ exports.updateEmployee = async function updateEmployee(client, id, username, pas
     }
     // now result should be the userID
 
+    // check if employee exists
+    var exists = client.db("AFRMS").collection("Employee").find({username: username, password: pass});
+    if (exists == null) {
+        console.log("[updateEmployee] employee does not exist!")
+        return;
+    }
+
     var collection = client.db("AFRMS").collection("Employee");
     var doc = {
+        _id: exists._id,
         userID: result,
         username: username,
         password: pass,
@@ -196,7 +204,8 @@ exports.updateEmployee = async function updateEmployee(client, id, username, pas
         role: role,
         availability: availability
     };
-    result = await collection.updateOne( {userID: result}, {$set: doc});
+    
+    result = await collection.updateOne( {_id: doc._id}, {$set: doc});
     console.log("[updateEmployee] updating Employee in Employee collection")
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
