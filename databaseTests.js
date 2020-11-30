@@ -59,7 +59,7 @@ async function main() {
         // returns list of employee docs 
         var employees = await db.getAllEmployees(client); 
         var team = {
-            TeamName: "cool team",
+            teamName: "cool team",
             author: employees[0],
             members: employees,
             availability: true
