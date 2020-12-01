@@ -510,7 +510,7 @@ function frMenu(client, user, req, res) {
         var dataFunc = require("./databaseFunctions");
         var employee = await dataFunc.getEmployee2(client, user._id);
         var team = await dataFunc.findTeamFromEmployee(client, employee);
-        var mission = await dataFunc.findMissionFromTeam(client, team);
+        var mission = await dataFunc.findMissionFromTeam(client, team._id);
 
         if (team != null && mission != null) {
             res.render('pages/frMenu/frMenu', {
