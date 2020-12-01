@@ -351,7 +351,7 @@ exports.addTeam = async function addTeam(client, team) {
 exports.updateTeam = async function updateTeam(client, team) {
 
     console.log("[updateTeam] updating Team in the Teams collection");
-    result = await client.db("AFRMS").collection("Events").updateOne({ _id: team._id }, 
+    result = await client.db("AFRMS").collection("Teams").updateOne({ _id: team._id }, 
         {$set: team});
     console.log("[updateEvent]:")
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
