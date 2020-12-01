@@ -204,7 +204,7 @@ exports.updateEmployee = async function updateEmployee(client, id, username, pas
         role: role,
         availability: availability
     };
-    
+
     result = await collection.updateOne( {_id: doc._id}, {$set: doc});
     console.log("[updateEmployee] updating Employee in Employee collection")
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
@@ -362,7 +362,7 @@ exports.addTeam = async function addTeam(client, team) {
 exports.updateTeam = async function updateTeam(client, team) {
 
     console.log("[updateTeam] updating Team in the Teams collection");
-    result = await client.db("AFRMS").collection("Events").updateOne({ _id: team._id }, 
+    result = await client.db("AFRMS").collection("Teams").updateOne({ _id: team._id }, 
         {$set: team});
     console.log("[updateEvent]:")
     console.log(`${result.matchedCount} document(s) matched the query criteria.`);
@@ -476,10 +476,10 @@ exports.findMissionFromTeam = async function findMissionFromTeam(client, team) {
 
     console.log("[findMissionFromTeam] finding Mission");
 
-    var query = { team: team};
+    var query = { team: team, $ne: {status: "Complete"}};
     var exists = await client.db("AFRMS").collection("Missions").findOne(query);
     if (exists == null) {
-        console.log("[findMissionFromTeam] Employee not found on any Team!");
+        console.log("[findMissionFromTeam] Team not found in any active Missions!");
         return;
     }
     return exists;

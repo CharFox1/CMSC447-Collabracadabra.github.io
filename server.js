@@ -12,8 +12,11 @@ function main() {
         console.log('Connected to the server');
         if (err) return console.log(err);
         var client = client;
-        app.listen(3000, () => { console.log('listening on 3000') });
-
+        
+        //app.listen(3000, () => { console.log('listening on 3000') });
+        app.listen(process.env.PORT || 3000);
+        console.log('listening');
+        
         app.get('/', function (req, res) { res.render('pages/signinPage'); });
         app.get('/createUser', function (req, res) { res.render('pages/createUser'); });
         app.get('/submitEvent', function (req, res) { res.render('pages/submitEvent', submitEvent(client, req, res)); });
