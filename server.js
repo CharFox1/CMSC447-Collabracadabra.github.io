@@ -274,7 +274,7 @@ function ocMenu(client, user, req, res) {
 
         var query = { mission: null };
         await client.db("AFRMS").collection("Events").find(query).toArray(function (err, events) {
-            query = { availability: true };
+            query = { availability: "Available" };
             client.db("AFRMS").collection("Teams").find(query).toArray(function (err, teams) {
                 res.render('pages/ocMenu/createMission', {
                     eventsList: [],
@@ -313,17 +313,19 @@ function createMission(client, user, req, res) {
         var teamname = req.body.teamname;
         var status = req.body.status;
 
-//        app.use(bodyParser.text({ type: 'text/html' }));
         var eventsList = [];
         for (i in eventsListID) {
             console.log(eventsListID[i]);
+            var dataFunc = require("./databaseFunctions");
             eventsList.push(await dataFunc.getEvent(client, eventsListID[i]));
         }
 
+        var dataFunc = require("./databaseFunctions");
+        var team = await dataFunc.getTeam(client, null, teamname);
+        var teamID = team._id;
+
         if (teamname != "" && teamID != null && eventsList.length != 0) {
             var dataFunc = require("./databaseFunctions");
-            var team = await dataFunc.getTeam(client, null, teamname);
-            var teamID = team._id;
             var missionID = await dataFunc.addMission(client, {
                 teamName: teamname,
                 team: team,
@@ -331,6 +333,8 @@ function createMission(client, user, req, res) {
                 events: eventsList,
                 status: status
             });
+            team.availability = status;
+            await dataFunc.updateTeam(client, team);
 
             if (missionID != null) {
                 console.log("Created a new mission");
@@ -593,7 +597,15 @@ function updateMission(client, user, req, res) {
 
 
         mission.status = status;
-        team.status = status;
+
+        if (status == "Complete") {
+            team.availability = "Available";
+            team.status = "Available"
+        }
+        else {
+            team.status = status;
+        }
+        
         await dataFunc.updateMission(client, mission);
         await dataFunc.updateTeam(client, team)
     });
