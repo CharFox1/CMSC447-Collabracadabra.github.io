@@ -476,7 +476,7 @@ exports.findMissionFromTeam = async function findMissionFromTeam(client, team) {
 
     console.log("[findMissionFromTeam] finding Mission");
 
-    var query = {"team._id": team._id, status: {$ne: "Complete"}};
+    var query = { "team._id": team._id, status: { $ne: "Complete" } };
     var exists = await client.db("AFRMS").collection("Missions").findOne(query);
     if (exists == null) {
         console.log("[findMissionFromTeam] Team not found in any active Missions!");
