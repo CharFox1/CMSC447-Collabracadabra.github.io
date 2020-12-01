@@ -598,7 +598,9 @@ function updateMission(client, user, req, res) {
 
         mission.status = status;
 
+        console.log("Checking if status is Complete");
         if (status == "Complete") {
+            console.log("Status is complete");
             team.availability = "Available";
             team.status = "Available"
         }
