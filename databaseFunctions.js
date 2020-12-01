@@ -333,6 +333,17 @@ exports.getEvent = async function getEvent(client, id) {
     return (result);
 }
 
+exports.getEvent2 = async function getEvent2(client, id) {
+
+    const query = { _id: id };
+    var result = await client.db("AFRMS").collection("Events").findOne(query);
+    if (result == null) {
+        console.log("result is null");
+        console.log(id);
+    }
+    return (result);
+}
+
 exports.getAllEvents = async function getAllEvents(client) {
     return await client.db("AFRMS").collection("Events").find();
 }
