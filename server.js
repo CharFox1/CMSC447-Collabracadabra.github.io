@@ -201,7 +201,7 @@ function submitEventPIN(client, user, req, res) {
 
         console.log(user._id);
         console.log(user.username);
-        if (name != null & location != null & desc != null) {
+        if (name != "" && location != "" && desc != "") {
             var eventID = await dataFunc.addEvent(client, {
                 PIN: user,
                 Username: user.username,
