@@ -311,7 +311,7 @@ function ocMenu(client, user, req, res) {
 
 function createMission(client, user, req, res) {
     var eventsListID = [];
-    app.post('/ApproveEvent', async (req, res) => {
+    app.post('/AddEvent', async (req, res) => {
         eventsListID.push(req.body.EventID);
     });
 

@@ -69,7 +69,7 @@
                         </li>
                         <li> Description: <%= event.Description %> </li>
                         <li> Time: <%= event.timestamp %> </li>
-                            <form action="/ApproveEvent" method="POST">
+                            <form action="/AddEvent" method="POST">
                             <input type ="hidden" name="EventID" id="id" value="<%=event._id%>">
                             <button type="submit">Add Event</button>
                             </form>
