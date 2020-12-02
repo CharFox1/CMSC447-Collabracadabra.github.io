@@ -28,9 +28,12 @@
                     <p>Status: <%= mission.status %> </p>
                     <ul>
                         <% mission.events.forEach(function(event) { %>
-                        <li>
-                            Event Location: <%= event.location %>, Description <%= event.description %> PIN: <%= event.PIN %>, Time: <%= event.timestamp %>
+                       <li>
+                            Event Location: <%= event.Location %> </li>
                         </li>
+                        <li> Description: <%= event.Description %> </li>
+                        <li> Time: <%= event.timestamp %> </li>
+                        <p> ____________________________________________________ </p>
                     <% }); %>
                     </ul>
                 <% }); %>

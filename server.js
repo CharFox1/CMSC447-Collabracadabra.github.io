@@ -140,7 +140,8 @@ function submitEvent(client, req, res) {
                 Location: location,
                 Description: desc,
                 severity: null,
-                mission: null,
+                mission: false,
+                EmployeeName: "Unapproved",
                 Employee: null
             });
 
@@ -167,7 +168,7 @@ function pinMenu(client, user, req, res) {
         var username = user.username;
         var name = user.name;
         var email = user.email;
-        var number = user.phone;
+        var number = user.number;
 
         res.render('pages/pinMenu/pinMenu', {
             username: username,
@@ -211,7 +212,8 @@ function submitEventPIN(client, user, req, res) {
                 Location: location,
                 Description: desc,
                 severity: null,
-                mission: null,
+                mission: false,
+                EmployeeName: "Unapproved",
                 Employee: null
             });
 
@@ -239,7 +241,7 @@ function ocMenu(client, user, req, res) {
     app.get('/home/oc', async function (req, res) {
         //Inside of create a Mission the Operations Chief will need to select a team, and select an array of events to place inside of the mission.
         //Get an array of all events that have been checked by a dispatcher and have yet to be assigned to a mission.
-        const query = {Employee: {$ne:null}, mission: null };
+        const query = {Employee: {$ne:null}, mission: false };
         await client.db("AFRMS").collection("Events").find(query).toArray(function (err, pendingEvents) {
 
             res.render('pages/ocMenu/ocMenu', {
@@ -275,7 +277,8 @@ function ocMenu(client, user, req, res) {
 
     app.get('/home/oc/createMission', async function (req, res) {
 
-        var query = { mission: null };
+        var query = {
+            mission: false, Employee: { $ne: null }};
         await client.db("AFRMS").collection("Events").find(query).toArray(function (err, events) {
             query = { availability: "Available" };
             client.db("AFRMS").collection("Teams").find(query).toArray(function (err, teams) {
@@ -291,7 +294,7 @@ function ocMenu(client, user, req, res) {
     app.get('/home/oc/createTeam', async function (req, res) {
         var query = { availability: true };
 
-        query = { role: "First Responder" };
+        query = { role: "First Responder", availability: "available" };
         await client.db("AFRMS").collection("Employee").find(query).toArray(function (err, employees) {
                 res.render('pages/ocMenu/createTeams', {
                     frsList: [],
@@ -320,7 +323,11 @@ function createMission(client, user, req, res) {
         for (i in eventsListID) {
             console.log(eventsListID[i]);
             var dataFunc = require("./databaseFunctions");
-            eventsList.push(await dataFunc.getEvent(client, eventsListID[i]));
+            var event = await dataFunc.getEvent(client, eventsListID[i]);
+            event.mission = true;
+            await dataFunc.updateEvent(client, event);
+
+            eventsList.push(event);
         }
 
         var dataFunc = require("./databaseFunctions");
@@ -468,7 +475,8 @@ function createEvent(client, user, req, res) {
                 Location: location,
                 Description: desc,
                 severity: urgency,
-                mission: null,
+                mission: false,
+                EmployeeName: user.name,
                 Employee: user
             });
 
@@ -497,6 +505,7 @@ function approveEvent(client, user, req, res) {
         var event = await dataFunc.getEvent(client, eventID);
         event.severity = severity;
         event.Employee = user;
+        event.EmployeeName = user.name;
 
         await dataFunc.updateEvent(client, event);
         res.redirect('/home/disp/approveEvents');

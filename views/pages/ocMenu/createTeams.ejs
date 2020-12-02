@@ -40,13 +40,15 @@
                      <h1>Available First Responders</h1>
                         <ul>
                         <% frs.forEach(function(fr) { %>              
-                            <strong>Name: <%= fr.name %></strong>
-                            <p>Role: <%= fr.role %>
+                            <strong>First Responder: <%= fr.username %></strong>
+                            <p>Name: <%= fr.name %></p>
+                            <p>Role: <%= fr.role %></p>
                             <p>availability: <%= fr.availability %> </p>
                             <form action="/AddFR" method="POST">
                             <input type ="hidden" name="frID" id="id" value="<%=fr._id%>">
                             <button type="submit">Add First Responder</button>
                             </form>
+                            <p>___________________________</p>
                     <% }); %>
               </div>
             </div>

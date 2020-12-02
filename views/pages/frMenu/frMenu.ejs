@@ -27,8 +27,11 @@
                     <ul>
                         <% mission_events.forEach(function(event) { %>
                         <li>
-                            Event Location: <%= event.location %>, Description <%= event.description %> PIN: <%= event.PIN %>, Time: <%= event.timestamp %>
+                            Event Location: <%= event.Location %> </li>
                         </li>
+                        <li> Description: <%= event.Description %> </li>
+                        <li> Time: <%= event.timestamp %> </li>
+                        <p>______________________________________________________</p>
                     <% }); %>
                     </ul>
             <h3>Team Info:</h3>           
@@ -36,9 +39,10 @@
                     <p>Team Type: <%= teamtype %> </p>
                     <p>Team Status: <%= availability  %> </p>
                     <% members.forEach(function(member) { %> 
-                        <p>Name: <%= member.name %> </p>
-                        <p>Role: <%= member.role %> </p>
-                        <p>Status: <%= member.availability %> </p>
+                        <li>Name: <%= member.name %> </li>
+                        <li>Role: <%= member.role %> </li>
+                        <li>Status: <%= member.availability %> </li>
+                        <p>____________________________________</p>
                      <% }); %>
             </div>
         </main>

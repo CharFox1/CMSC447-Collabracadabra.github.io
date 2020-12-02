@@ -65,8 +65,10 @@
                         <p><strong>Severity: <%= event.severity %></strong></p>
                         <li> Event ID: <%=event._id %></li>
                         <li>
-                            Event Location: <%= event.location %>, Description: <%= event.description %>, Time: <%= event.timestamp %>
+                            Event Location: <%= event.Location %> </li>
                         </li>
+                        <li> Description: <%= event.Description %> </li>
+                        <li> Time: <%= event.timestamp %> </li>
                             <form action="/ApproveEvent" method="POST">
                             <input type ="hidden" name="EventID" id="id" value="<%=event._id%>">
                             <button type="submit">Add Event</button>
