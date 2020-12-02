@@ -536,3 +536,15 @@ exports.getLocationLatLong = async function getLocationLatLong(client, lat, lon)
     }
     return result;
 }
+
+exports.updateLocation = async function updateLocation(client, location) {
+
+    console.log("[updateLocation] update location");
+
+    if (locaction.latitude == null | location.longitude == null) {
+        console.log("[updateLocation] location is missing latitude or longitude");
+        return;
+    }
+    var result = client.db("AFRMS").collection("Locations").updateOne({_id: location._id}, {location});
+    return(result.insertedId);
+}
