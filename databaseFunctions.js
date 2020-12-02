@@ -504,3 +504,35 @@ exports.findMissionFromEmployee = async function findMissionFromEmployee(client,
     return result;
 
 }
+
+exports.addLocation = async function addLocation(client, location) {
+
+    console.log("[addLocation] adding location");
+
+    if (locaction.latitude == null | location.longitude == null) {
+        console.log("[addLocation] location is missing latitude or longitude");
+        return;
+    }
+    var result = client.db("AFRMS").collection("Locations").insertOne(location);
+    return(result.insertedId);
+}
+
+exports.getLocation = async function getLocation(client, locationID) {
+    console.log("[addLocation] getting location");
+    result = client.db("AFRMS").collection("Locations").findOne({_id: locationID});
+    if (result == null) {
+        console.log("[getLocation] could not find location with this ID!");
+        return;
+    }
+    return result;
+}
+
+exports.getLocationLatLong = async function getLocationLatLong(client, lat, lon) {
+    console.log("[addLocationLatLong] getting location");
+    result = client.db("AFRMS").collection("Locations").findOne({latitude: lat, longitude: lon});
+    if (result == null) {
+        console.log("[getLocationLatLong] could not find location with this lat lon!");
+        return;
+    }
+    return result;
+}
