@@ -537,6 +537,12 @@ exports.getLocationLatLong = async function getLocationLatLong(client, lat, lon)
     return result;
 }
 
+exports.getAllLocations = async function getAllLocations(client) {
+    console.log("[getAllLocations] getting all locations");
+    var result = client.db("AFRMS").collection("Locations").find().toArray()
+    return result;
+}
+
 exports.updateLocation = async function updateLocation(client, location) {
 
     console.log("[updateLocation] update location");
