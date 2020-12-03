@@ -8,6 +8,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <script src="../../../databaseFunctions.js"></script>
         <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=Akk01vko6U7AknIQbuqPOOwSg2jiZwTKoqvkDKtrIB6i-An4f2J-n4-LKCFILYOD'></script>
         <%- include('../../Partials/head'); %>
         
@@ -17,7 +18,7 @@
                 var layer;
                 var somePlace;
                 var somePlace2;
-                function loadMapScenario() 
+                async function loadMapScenario() 
                 {
                     map = new Microsoft.Maps.Map(document.getElementById('myMap'), {});
                     somePlace = new Microsoft.Maps.Location(39.4527738, -76.7737872);
@@ -27,6 +28,40 @@
                     var layer = new Microsoft.Maps.Layer();
                     layer.add(pushpin);
                     map.layers.insert(layer);
+
+                    console.log("[adminMap] got this far");
+                    //var db = require("./databaseFunctions.js");
+                    console.log("[adminMap] now this far");
+
+                    // setup connection to the cluster
+                    const MongoClient = require('mongodb').MongoClient;
+                    const uri = "mongodb+srv://Admin:Password@cluster0.ejcge.mongodb.net/AFRMS?retryWrites=true&w=majority";
+                    const client = new MongoClient(uri, { useNewUrlParser: true }, { useUnifiedTopology: true });
+
+                    try {
+                        // connect to the cluster
+                        await client.connect();
+
+                        // load all locations in database
+                        var dbLocations = await exports.getAllLocations(client)
+
+                        for (var location of dbLocations) {
+                            var loc = new Microsoft.Maps.Location(location.latitude, location.longitude)
+                            var pushpin = new Microsoft.Maps.Pushpin(loc, {
+                                title: location.event._id,
+                                subTitle: location.event.Description
+                            })
+                            layer.add()
+                        }
+
+                    } catch (e) {
+                        console.error(e);
+                    } finally {
+                        await client.close();
+                    }
+
+                    console.log("[adminMap] and this far");
+
                     Microsoft.Maps.Events.addHandler(layer, 'click', function (e)
                     {
                         var bin = e.primitive;
@@ -48,6 +83,25 @@
                             'Suggestion: ' + suggestionResult.formattedSuggestion +
                             '<br> Lat: ' + suggestionResult.location.latitude +
                             '<br> Lon: ' + suggestionResult.location.longitude;
+
+                        var time = new Date();
+                        
+                        exports.addLocation(client, {
+                            latitude: suggestionResult.location.latitude,
+                            longitude: suggestionResult.location.longitude,
+                            event: {
+                                Username: "Admin",
+                                Name: "Admin",
+                                Number: "123-456-7890",
+                                Email: "Admin@email.com",
+                                timestamp: time,
+                                Location: "here",
+                                Description: "A location Admin picked",
+                                severity: 6,
+                                mission: false
+                            }
+                        })
+
                     }
 
                     
