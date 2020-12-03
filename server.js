@@ -517,6 +517,8 @@ function frMenu(client, user, req, res) {
     app.get('/home/fr', async function (req, res) {
         //First find out what team they belong too.
         var dataFunc = require("./databaseFunctions");
+        console.log("User ID: ");
+        console.log(user._id);
         var employee = await dataFunc.getEmployee2(client, user._id);
         var team = await dataFunc.findTeamFromEmployee(client, employee);
         var mission = await dataFunc.findMissionFromTeam(client, team);
