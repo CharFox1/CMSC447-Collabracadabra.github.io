@@ -25,9 +25,11 @@
                     <p>Team: <%= mission_teamName %> </p>
                 <ul>
                 <% mission_events.forEach(function(event) { %>
-                    <li>
-                    Event Location: <%= event.location %>, Description <%= event.description %> PIN: <%= event.PIN.name %>, Time: <%= event.timestamp %>
-                    </li>
+                        <li> PIN Name: <%= event.Name %> </li>
+                        <li> Event Location: <%= event.Location %> </li>
+                        <li> Description: <%= event.Description %> </li>
+                        <li> Time: <%= event.timestamp %> </li>
+                        <p>______________________________________________________</p>
                  <% }); %>
                  </ul>
                 <form action="/UpdateMission" method="POST">
