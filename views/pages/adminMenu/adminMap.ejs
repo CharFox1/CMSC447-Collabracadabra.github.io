@@ -8,24 +8,32 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <script type = 'text/javascript' src="databaseFunctions.js"></script>
         <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=Akk01vko6U7AknIQbuqPOOwSg2jiZwTKoqvkDKtrIB6i-An4f2J-n4-LKCFILYOD'></script>
         <%- include('../../Partials/head'); %>
         
         <script type='text/javascript'>
                 var map;
-                var pushpin;
+                var pushpins;
                 var layer;
                 var somePlace;
-                var somePlace2;
+                var somePlace2
                 function loadMapScenario() 
                 {
                     map = new Microsoft.Maps.Map(document.getElementById('myMap'), {});
-                    somePlace = new Microsoft.Maps.Location(39.4527738, -76.7737872);
-                    somePlace2 = new Microsoft.Maps.Location(39.43218, -76.815318);
-                    pushpin = new Microsoft.Maps.Pushpin(somePlace, null);
-                    pushpin = new Microsoft.Maps.Pushpin(somePlace2, null);
+                    pushpins = Microsoft.Maps.TestDataGenerator.getPushpins(50, map.getBounds());
+                    //trying to iterate through pins
+                    for(var i = 0, len = pushpins.length; i < len; i++)
+                    {
+                        somePlace2 = i + 1;
+                        pushpins[i].setOptions(
+                        {
+                            
+                            title: 'Event '+somePlace2.toString()
+                        });
+                    }
                     var layer = new Microsoft.Maps.Layer();
-                    layer.add(pushpin);
+                    layer.add(pushpins);
                     map.layers.insert(layer);
                     Microsoft.Maps.Events.addHandler(layer, 'click', function (e)
                     {
@@ -60,11 +68,12 @@
 
         <header>
         <%- include('../../Partials/ADMINheader'); %>
+     
         </header>
 
         <div id='printoutPanel'></div>
         <div id='searchBoxContainer'><input type= 'text' id= 'searchBox'/></div>     
-        <div id='myMap' style='top: 0; width: 60vw; height: 1000px; z-index: 1;'></div>
+        <div id='myMap' style='top: 0; width: 60vw; height: 40vw; z-index: 1;'></div>
 
 
         <footer>
