@@ -55,8 +55,9 @@ function signIn(client) {
         else {
             console.log("Found User!");
             //GO TO THE MENU PAGE
-            var user = await dataFunc.getUser(client, userID);
+            var user = await dataFunc.getUser2(client, userID);
             console.log(user.role);
+            console.log(user.name);
             if (user.role == "PIN") {
                 console.log("User role: PIN");
                 pinMenu(client, user, req, res);
